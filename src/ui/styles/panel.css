@@ -1,0 +1,121 @@
+/* Panel kökü ve temalar */
+:root{
+  --br-bg: rgba(22, 26, 34, 0.90);
+  --br-elev1: rgba(28, 32, 44, 0.85);
+  --br-text: #f0f2f6;
+  --br-border: #2d3242;
+  --br-radius: 12px;
+  --br-shadow: 0 12px 32px rgba(0,0,0,.35);
+  --br-header-h: 40px;
+
+  /* 🌌 Mor neon tonları (soft) */
+  --br-accent: #7A2FFF;
+  --br-accent-strong: #9B5CFF;
+
+  /* ✅ İLK AÇILIŞ BOYUTLARI (varsayılan) */
+  /* resize.js inline width/height yazarak bunları geçersiz kılabilir */
+  --br-panel-w: 500px;   /* önce 340px sabitti → ilk karede daha geniş aç */
+  --br-panel-h: 520px;   /* önce auto idi → ilk karede daha yüksek aç */
+}
+
+#br-panel, #br-panel * { box-sizing: border-box; }
+
+#br-panel{
+  position: fixed;
+  top: 10px; left: 10px;
+  z-index: 2147483647;
+
+  /* ✅ Varsayılan genişlik/yükseklik artık değişkenlerle yönetiliyor */
+  width: var(--br-panel-w, 500px);
+  height: var(--br-panel-h, auto);
+  max-height: 90vh;
+
+  background: var(--br-bg);
+  color: var(--br-text);
+  border: 1px solid var(--br-border);
+  border-radius: var(--br-radius);
+
+  /* 🌌 Yumuşak mor halo (daha az parlak, daha yayık) */
+  box-shadow:
+    var(--br-shadow),
+    0 0 0 1px color-mix(in oklab, var(--br-accent), #000 80%),
+    0 0 18px color-mix(in oklab, var(--br-accent-strong), #000 92%);
+
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  container-type: inline-size;
+}
+
+/* Mini mod dışında: asgari yükseklik garantisi ver (ilk karede “ufacık” olmasın) */
+#br-panel:not(.br--mini){
+  min-height: calc(var(--br-header-h) + 200px);
+}
+
+/* Header ve Body */
+.br-header{
+  height: var(--br-header-h);
+  min-height: var(--br-header-h);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  /* Alt hairline: accente çok hafif dokunuş */
+  border-bottom: 1px solid color-mix(in oklab, var(--br-border), var(--br-accent) 16%);
+  background: rgba(20,24,32,0.85);
+}
+
+.br-body{
+  position: relative;
+  padding: 8px;
+  overflow: auto;
+  max-height: calc(90vh - var(--br-header-h) - 16px);
+}
+
+/* Mini mod — akıcı gizleme */
+#br-panel.br--mini{
+  width: 300px;
+  height: var(--br-header-h);
+  min-height: var(--br-header-h);
+  max-height: none;
+}
+#br-panel.br--mini .br-body{
+  overflow: hidden;
+  max-height: 0 !important;
+  padding: 0 !important;
+}
+#br-panel.br--mini .br-resize{ display:none; }
+
+/* Resize tutamağı */
+.br-resize{
+  position:absolute; right:4px; bottom:4px;
+  width: 14px; height: 14px;
+  cursor: nwse-resize; z-index:2; touch-action:none;
+  opacity:.6;
+  background:
+    linear-gradient(135deg, transparent 0 45%, rgba(255,255,255,.25) 45% 55%, transparent 0) no-repeat,
+    linear-gradient(135deg, transparent 0 65%, rgba(255,255,255,.25) 65% 75%, transparent 0) no-repeat,
+    linear-gradient(135deg, transparent 0 85%, rgba(255,255,255,.25) 85% 95%, transparent 0) no-repeat;
+  background-size: 100% 100%, 80% 80%, 60% 60%;
+}
+
+/* Progress bar */
+.br-progress{
+  position: relative;
+  height: 4px;
+  margin: 4px 0 8px 0;
+  border-radius: 999px;
+  background: rgba(255,255,255,.08);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.10);
+}
+.br-progress__fill{
+  width: 0%;
+  height: 100%;
+  background: var(--br-accent);
+  transition: width .2s linear;
+}
+.br-progress--success .br-progress__fill{ background:#30d158; }
+.br-progress--warn    .br-progress__fill{ background:#ffd60a; }
+.br-progress--error   .br-progress__fill{ background:#ff453a; }

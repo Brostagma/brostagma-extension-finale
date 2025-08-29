@@ -1,0 +1,83 @@
+/* Kart kabı */
+.br-card{
+  background: color-mix(in oklab, var(--br-elev1) 92%, transparent);
+  border:1px solid color-mix(in oklab, var(--br-border), #fff 8%);
+  border-radius:12px;
+  padding:12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(0,0,0,.16);
+}
+.br-card h3{
+  margin:0 0 10px; font-size:14px; color:#dfe5ee; letter-spacing:.2px;
+}
+
+/* Üst grid (3 ana sayaç) */
+.br-counters__grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap:8px;
+}
+
+/* DT alt sırası */
+.br-counters__dt{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:8px;
+  margin-top:8px;
+}
+
+/* Sayaç item – SOFT TONLAR */
+.br-counters__item{
+  position: relative;
+  display:grid;
+  grid-template-columns: auto 1fr auto;
+  align-items:center;
+  gap:6px;
+  padding:8px;
+
+  /* Kontrastı düşürülmüş cam + hafif highlight */
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--br-bg) 92%, #fff 8%),
+      color-mix(in oklab, var(--br-bg) 97%, #fff 3%));
+  border:1px solid color-mix(in oklab, var(--br-border), var(--br-accent) 12%); /* önceki >60% idi */
+  border-radius:10px;
+  min-width:0;
+
+  box-shadow: inset 0 1px 6px rgba(0,0,0,.12);
+  backdrop-filter: blur(6px);
+
+  transition:
+    transform .12s ease,
+    box-shadow .22s ease,
+    border-color .22s ease,
+    background .22s ease;
+}
+
+.br-counters__icon{ font-size:16px; opacity:.95; }
+.br-counters__label{ font-size:11px; color:#a7afbd; }
+.br-counters__value{ font-size:15px; font-weight:700; color:#f6f7fb; }
+
+/* Küçük sayaç */
+.br-counters__item--small{ padding:6px; gap:4px; }
+.br-counters__item--small .br-counters__icon{ font-size:13px; }
+.br-counters__item--small .br-counters__label{ font-size:10px; }
+.br-counters__item--small .br-counters__value{ font-size:13px; font-weight:600; }
+
+/* Hover – neon yerine çok hafif ring + yükselme */
+.br-counters__item:hover{
+  transform: translateY(-1px);
+  box-shadow:
+    0 6px 18px rgba(0,0,0,.16),
+    0 0 8px color-mix(in oklab, var(--br-accent), #000 92%); /* sakin halo */
+  border-color: color-mix(in oklab, var(--br-border), var(--br-accent) 16%);
+}
+
+/* Şeffaf üst parlaklık – minimal */
+.br-counters__item::after{
+  content:"";
+  position:absolute; inset:0; pointer-events:none;
+  background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 40%);
+  border-radius: inherit;
+}

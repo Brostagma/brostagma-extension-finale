@@ -1,0 +1,113 @@
+/* src/ui/island.css */
+/* Panel sağ bitişine hizalı "yüzen ada" stilleri
+   - Soft mavi→mor cam görünüm
+   - Hover'da yumuşak neon; paneli boğmaz
+   - Panel içindeki eski scan CTA'sını gizler (kaldırma yerine güvenli gizleme) */
+
+:root{ --br-blueSoft: #6F7CFF; }
+
+/* (eski panel içi buton) güvenli gizleme */
+.br-scanCtrl,
+.br-btn.br-btn--scan{
+  display: none !important;
+}
+
+/* ================ ADA ================ */
+
+.br-island{
+  position: fixed; /* konumu island.js hesaplıyor */
+  z-index: 2147483647;
+  display: grid;
+  gap: 10px;
+  pointer-events: none; /* yalnız butonlar tıklanabilir */
+}
+
+.br-island--stack{ grid-auto-flow: row; }
+
+.br-island__btn{
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid color-mix(in oklab, var(--br-border), #fff 8%);
+  border-radius: 16px;
+  padding: 12px 14px;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: .1px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform .12s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease, opacity .22s ease;
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.28),
+    0 0 0 1px color-mix(in oklab, var(--br-accent), #000 85%);
+}
+
+.br-island__icon{
+  width: 18px; height: 18px; display:inline-grid; place-items:center;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.35));
+}
+
+.br-island__label{ font-size: 13px; }
+
+/* Scan: mavi-viyole cam → hover'da soft koyu mor */
+.br-island__btn--scan{
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--br-bg) 84%, var(--br-blueSoft) 16%),
+      color-mix(in oklab, var(--br-bg) 92%, var(--br-blueSoft) 8%));
+  border-color: color-mix(in oklab, var(--br-blueSoft) 35%, var(--br-border) 65%);
+}
+.br-island__btn--scan:hover{
+  transform: translateY(-1px);
+  cursor: pointer;
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--br-bg) 78%, var(--br-accent) 22%),
+      color-mix(in oklab, var(--br-bg) 88%, var(--br-accent-strong) 12%));
+  border-color: color-mix(in oklab, var(--br-accent), var(--br-border) 35%);
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.30),
+    0 0 14px color-mix(in oklab, var(--br-accent-strong), transparent 82%),
+    0 0 0 1px color-mix(in oklab, var(--br-accent), #000 80%);
+}
+.br-island__btn--scan.is-on{
+  background: linear-gradient(180deg, #2b2f3f, #1f2332);
+  border-color: color-mix(in oklab, var(--br-border), #fff 10%);
+  box-shadow: 0 8px 20px rgba(0,0,0,.25);
+}
+
+/* Export: pasif/aktif */
+.br-island__btn--export{
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--br-bg) 92%, #2ad1b2 8%),
+      color-mix(in oklab, var(--br-bg) 96%, #2ad1b2 4%));
+  border-color: color-mix(in oklab, #2ad1b2 35%, var(--br-border) 65%);
+}
+.br-island__btn--export:hover{
+  transform: translateY(-1px);
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.30),
+    0 0 14px color-mix(in oklab, var(--br-accent-strong), transparent 82%),
+    0 0 0 1px color-mix(in oklab, var(--br-accent), #000 80%);
+    cursor: pointer;
+}
+.br-island__btn--export.is-disabled{
+  opacity:.55; cursor:not-allowed; filter:grayscale(.15);
+  transform:none !important;
+}
+
+/* 🔒 ADA KİLİT DURUMU: dsOverlay açıkken */
+.br-island.is-locked .br-island__btn{
+  pointer-events: none;
+  opacity: .55;
+  filter: grayscale(.2);
+  cursor: not-allowed;
+}
+
+/* Küçük ekran içe al */
+@media (max-width: 540px){
+  .br-island__btn{ padding:10px 12px; border-radius:14px; }
+  .br-island__label{ font-size:12px; }
+}

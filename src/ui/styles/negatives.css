@@ -1,0 +1,127 @@
+/* Negatif Anahtarlar kartı */
+:root{ --br-blueSoft: #6F7CFF; }
+
+.br-neg.br-card{
+  padding:10px;
+  background: color-mix(in oklab, var(--br-elev1, rgba(28,32,44,.85)) 90%, transparent);
+  border: 1px solid color-mix(in oklab, var(--br-border, #2d3242), #fff 10%);
+  border-radius:12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 28px rgba(0,0,0,.18);
+  margin-top: 8px;
+}
+
+.br-neg h3{
+  margin:0 0 8px; font-size:12px; color:#dde3ee;
+}
+
+.br-neg__row{
+  display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;
+}
+
+/* ✅ Okunabilirlik + focus durumu güçlendirildi */
+.br-neg .br-neg__input{
+  flex:1 1 220px;
+  min-width: 220px;
+  padding:8px 10px;
+  border-radius:10px;
+  border:1px solid color-mix(in oklab, var(--br-border, #2d3242), #fff 14%);
+  background: color-mix(in oklab, var(--br-bg, #12151c) 88%, #fff 4%);
+  color:#eef3fb;
+  caret-color: #eef3fb;
+  font-size:12px;
+  outline:none;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.br-neg .br-neg__input::placeholder{ color: #c7d0df; opacity:.8; }
+.br-neg .br-neg__input:focus{
+  border-color: color-mix(in oklab, var(--br-accent, #5B8CFF), #fff 10%);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--br-accent, #5B8CFF), transparent 80%);
+  background: color-mix(in oklab, var(--br-bg, #12151c) 86%, #fff 6%);
+}
+
+.br-neg__list{ display:flex; gap:6px; flex-wrap:wrap; min-height: 28px; }
+.br-neg__empty{ font-size:11px; color:#cbd3df; opacity:.8; }
+
+/* Chip */
+.br-chip.br-chip--neg{
+  display:inline-flex; align-items:center; gap:6px;
+  height: 26px; padding:0 10px; border-radius:999px;
+  background: color-mix(in oklab, var(--br-bg, #12151c) 90%, #fff 6%);
+  border: 1px solid color-mix(in oklab, var(--br-border, #2d3242), #fff 12%);
+  color:#e8eef8; cursor:pointer;
+  transition: transform .05s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.br-chip.br-chip--neg:hover{ transform: translateY(-1px); box-shadow:0 8px 18px rgba(0,0,0,.22); }
+.br-chip__x{ opacity:.8; }
+.br-chip__x:hover{ opacity:1; }
+
+/* Modal */
+.br-negmodal{ position:fixed; inset:0; z-index:2147483647; display:flex; align-items:center; justify-content:center;
+  opacity:0; transform:scale(.98); transition: opacity .18s ease, transform .18s ease; pointer-events: none; }
+.br-negmodal.is-in{ opacity:1; transform:scale(1); pointer-events: auto; }
+.br-negmodal__scrim{ position:absolute; inset:0; background:rgba(0,0,0,.45); backdrop-filter: blur(2px); }
+.br-negmodal__panel{
+  position:relative; width:min(720px, 92vw); max-height: 80vh;
+  background: color-mix(in oklab, var(--br-elev1, rgba(28,32,44,.85)) 94%, transparent);
+  border:1px solid color-mix(in oklab, var(--br-border, #2d3242), #fff 12%);
+  border-radius:14px; box-shadow: 0 20px 48px rgba(0,0,0,.35);
+  display:flex; flex-direction:column; overflow:hidden; pointer-events: auto;
+}
+.br-negmodal__head{ display:flex; align-items:center; justify-content:space-between;
+  padding:10px 12px; border-bottom:1px solid color-mix(in oklab, var(--br-border, #2d3242), #fff 10%); }
+.br-negmodal__head h4{ margin:0; font-size:13px; color:#e8eef8; }
+.br-negmodal__close{ border:0; background:transparent; color:#e8eef8; font-size:18px; cursor:pointer; opacity:.8; }
+.br-negmodal__close:hover{ opacity:1; }
+.br-negmodal__body{ padding:10px 12px; }
+.br-negmodal__hint{ margin:.2rem 0 .6rem; font-size:11px; color:#cdd6e4; opacity:.9; }
+.br-negmodal__ta{
+  width:100%; min-height: 220px; resize:vertical;
+  padding:10px; font-size:12px; line-height:1.4; color:#e8eef8;
+  border-radius:10px; outline:none;
+  border:1px solid color-mix(in oklab, var(--br-border, #2d3242), #fff 12%);
+  background: color-mix(in oklab, var(--br-bg, #12151c) 95%, transparent);
+}
+.br-negmodal__foot{ display:flex; align-items:center; gap:8px; padding:10px 12px;
+  border-top:1px solid color-mix(in oklab, var(--br-border, #2d3242), #fff 10%); }
+.br-negmodal__spacer{ flex:1; }
+
+/* Buton varyantları – aynı ilke: normal mavi-viyole cam, hover soft mor yansıma */
+.br-btn--ghost,
+.br-btn--subtle{
+  position:relative; overflow:hidden;
+  color:#ecf1f8; border-radius:999px; padding:8px 12px; cursor:pointer;
+
+  border:1px solid color-mix(in oklab, var(--br-blueSoft) 30%, var(--br-border) 70%);
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--br-bg) 90%, var(--br-blueSoft) 10%),
+      color-mix(in oklab, var(--br-bg) 96%, var(--br-blueSoft) 4%));
+  transition: transform .10s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease;
+  backdrop-filter: blur(6px);
+}
+.br-btn--ghost::before,
+.br-btn--subtle::before{
+  content:""; position:absolute; inset:-2px; pointer-events:none;
+  background:
+    radial-gradient(120% 100% at 30% -10%, color-mix(in oklab, #ffffff 8%, transparent) 0%, transparent 60%),
+    linear-gradient(180deg, transparent, color-mix(in oklab, var(--br-accent), transparent 90%));
+  mix-blend-mode: screen; opacity:0; filter: blur(.2px);
+  transition: opacity .22s ease, filter .22s ease;
+}
+.br-btn--ghost:hover,
+.br-btn--subtle:hover{
+  transform: translateY(-1px);
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--br-bg) 82%, var(--br-accent) 18%),
+      color-mix(in oklab, var(--br-bg) 90%, var(--br-accent-strong) 10%));
+  border-color: color-mix(in oklab, var(--br-accent), var(--br-border) 35%);
+  box-shadow:
+    0 6px 18px rgba(0,0,0,.18),
+    0 0 10px color-mix(in oklab, var(--br-accent-strong), transparent 86%),
+    0 0 0 1px color-mix(in oklab, var(--br-accent), #000 84%);
+}
+.br-btn--ghost:hover::before,
+.br-btn--subtle:hover::before{ opacity:.18; }

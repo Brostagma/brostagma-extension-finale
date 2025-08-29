@@ -1,0 +1,102 @@
+/* Debug panel: sol-alt köşede, sabit boy */
+#br-debug {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 2147483647;
+  width: 260px;
+  height: 380px; /* sabit yükseklik */
+  background: #0f1217;
+  color: #e6e6e6;
+  border: 1px solid #272a31;
+  border-radius: 10px;
+  font: 13px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+
+  display: flex;
+  flex-direction: column; /* kritik */
+  overflow: hidden;
+}
+
+/* header: yukarıda sabit */
+#br-debug .dbg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-bottom: 1px solid #242833;
+  background: #0c1017;
+  flex: 0 0 auto;  /* sabit yükseklik */
+  height: 40px;
+}
+#br-debug .dbg-title {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* body: header + log arasını paylaşır */
+#br-debug .dbg-body {
+  flex: 1 1 auto;
+  min-height: 0; /* 🔥 kritik: çocukların taşmaması için */
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden; /* sadece log scroll etsin */
+}
+
+/* buton satırları */
+#br-debug .dbg-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* buton stili */
+#br-debug .dbg-btn {
+  border: 1px solid #2a2f3a;
+  background: #151a23;
+  color: #e6e6e6;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: transform .06s ease, box-shadow .2s ease,
+              background .2s ease, border-color .2s ease;
+}
+#br-debug .dbg-btn:hover {
+  transform: translateY(-1px);
+  background: #111726;
+  border-color: #364052;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .2);
+}
+
+/* log alanı: sadece burada scroll */
+#br-debug .dbg-log {
+  flex: 1 1 auto;   /* kalan alanı al */
+  min-height: 80px; /* görünür olsun */
+  overflow: auto;
+  font-size: 12px;
+  color: #9aa0a6;
+  background: #0b0f16;
+  border: 1px dashed #2a2f3a;
+  border-radius: 8px;
+  padding: 8px;
+  white-space: pre-wrap;
+}
+
+/* kapatma butonu */
+#br-debug .dbg-close {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #2a2f3a;
+  border-radius: 6px;
+  background: transparent;
+  color: #e6e6e6;
+  cursor: pointer;
+}
+#br-debug .dbg-close:hover {
+  background: rgba(255, 255, 255, .06);
+}

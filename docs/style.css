@@ -1,0 +1,118 @@
+:root{
+  --bg:#0b0d12; --panel:#111525; --panel-2:#0f1322;
+  --text:#e8ebff; --muted:#a0a8c9;
+  --accent:#7c3aed; --accent-2:#a78bfa; --ok:#22c55e; --warn:#f59e0b;
+  --radius:18px; --shadow:0 10px 30px rgba(0,0,0,.35);
+  --ring: 0 0 0 3px rgba(124,58,237,.35);
+}
+@media (prefers-color-scheme: light){
+  :root{ --bg:#f6f7fb; --panel:#ffffff; --panel-2:#f2f4ff; --text:#11131a; --muted:#5a627a; --shadow:0 10px 24px rgba(17,19,26,.08) }
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:linear-gradient(180deg,var(--bg),#090b14 40%,var(--bg));
+  color:var(--text); font:16px/1.65 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+}
+
+/* Layout */
+.wrap{max-width:1120px; margin:0 auto; padding:24px}
+.section{margin-top:46px}
+
+/* Nav */
+.nav{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:8px 0; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:10px; color:var(--text); text-decoration:none}
+.logo{
+  width:32px;height:32px;border-radius:1px; display:grid;place-items:center; color:#fff;
+  background:linear-gradient(135deg,var(--accent),#4c1d95);
+  box-shadow:0 6px 18px rgba(124,58,237,.45);
+}
+/* YENİ: logo görselini çerçeve içinde konumlandır */
+.logo-img{
+  width:32px; height:32px; object-fit:contain; display:block;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.25));
+}
+.nav-links{display:flex; flex-wrap:wrap; gap:12px}
+.nav-links a{color:var(--text); text-decoration:none; padding:8px 12px; border-radius:999px;
+             background:rgba(124,58,237,.14); border:1px solid rgba(124,58,237,.35)}
+.nav-links a:hover{box-shadow:var(--ring)}
+
+/* Cards & grids */
+.card{background:var(--panel); border:1px solid rgba(124,58,237,.14); border-radius:14px; padding:18px; box-shadow:var(--shadow)}
+.hero{margin-top:22px; padding:34px; border-radius:18px; background:
+      radial-gradient(1200px 420px at 8% -10%,rgba(124,58,237,.25),transparent),
+      linear-gradient(180deg,var(--panel),var(--panel-2)); border:1px solid rgba(124,58,237,.2)}
+.lead{color:var(--muted)}
+.grid{display:grid; gap:16px}
+.features{grid-template-columns: repeat(3,1fr)}
+.how{grid-template-columns: repeat(4,1fr)}
+@media (max-width: 960px){ .features{grid-template-columns:1fr 1fr} .how{grid-template-columns:1fr 1fr} }
+@media (max-width: 640px){
+  .features,.how{grid-template-columns:1fr}
+  .hero{padding:24px}
+  .nav-links a{padding:6px 10px}
+}
+
+/* Pills & buttons */
+.pill{display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px;
+     background:rgba(124,58,237,.12); border:1px solid rgba(124,58,237,.32)}
+.btn{display:inline-flex; align-items:center; gap:8px; padding:12px 18px; border-radius:12px; border:0;
+     cursor:pointer; font-weight:600; text-decoration:none}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#5b21b6); color:#fff}
+.btn-primary:hover{filter:brightness(1.06)}
+.btn-ghost{background:rgba(124,58,237,.12); color:var(--text); border:1px solid rgba(124,58,237,.35)}
+.btn-ghost:hover{box-shadow:var(--ring)}
+.cta{margin-top:18px; display:flex; gap:10px; flex-wrap:wrap}
+
+/* Steps */
+.step{position:relative}
+.step .n{position:absolute; top:-10px; right:-10px; background:#1f2937; color:#fff; width:28px; height:28px;
+         border-radius:999px; display:grid; place-items:center; font-size:.9rem;
+         border:1px solid rgba(124,58,237,.35)}
+
+/* FAQ */
+.faq .qa{margin-bottom:12px}
+.faq .q{font-weight:700; margin:0 0 6px}
+.faq .a{margin:0; color:var(--muted)}
+
+/* Footer */
+.foot{margin:40px 0 20px; text-align:center; color:var(--muted)}
+.foot a{color:var(--accent-2)}
+
+/* ——— YÜZEN ADA ——— */
+.install-island{
+  position: fixed; right: 18px; bottom: 18px;
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px; border-radius:18px;
+  color:#fff; text-decoration:none; font-weight:700; letter-spacing:.2px;
+  background: linear-gradient(135deg, rgba(124,58,237,.75), rgba(91,33,182,.75));
+  box-shadow: 0 10px 26px rgba(124,58,237,.45), 0 2px 8px rgba(0,0,0,.25);
+  transform: translateY(16px) scale(.98); opacity:0; pointer-events:none;
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .35s ease, box-shadow .2s ease;
+  z-index: 9999; backdrop-filter: blur(10px);
+  border: 1px solid rgba(167,139,250,.55);
+  animation: floaty 5.5s ease-in-out infinite;
+}
+@supports not (backdrop-filter: blur(10px)){
+  .install-island{ background: linear-gradient(135deg,#7c3aed,#5b21b6); }
+}
+@keyframes floaty{ 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-3px) } }
+.install-island::before{
+  content:""; position:absolute; inset:0; border-radius:18px; pointer-events:none;
+  background: radial-gradient(600px 100px at 0% 0%, rgba(255,255,255,.15), transparent 60%);
+}
+.install-island .island-img{
+  width:40px; height:40px; border-radius:12px; object-fit:cover;
+  box-shadow: 0 8px 18px rgba(0,0,0,.35);
+}
+.install-island .island-meta{display:flex; flex-direction:column; line-height:1.1}
+.install-island .island-eyebrow{font-size:.78rem; font-weight:600; opacity:.9}
+.install-island .island-text{font-size:1.02rem}
+.install-island.show{opacity:1; transform: translateY(0) scale(1); pointer-events:auto}
+.install-island:hover{box-shadow: 0 14px 30px rgba(124,58,237,.55), 0 4px 12px rgba(0,0,0,.28)}
+.install-island.float-up{transform: translateY(-6px)}
+@media (max-width:560px){
+  .install-island{ left: 12px; right: 12px; bottom: 14px; justify-content:center; padding:12px 14px; gap:10px; border-radius:16px }
+  .install-island .island-img{width:36px; height:36px; border-radius:10px}
+  .install-island .island-text{font-size:1rem}
+}

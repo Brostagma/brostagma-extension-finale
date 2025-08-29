@@ -1,0 +1,105 @@
+/* ===========================
+   Toasts (global, sağ-alt)
+   =========================== */
+
+.br-toaststack-global{
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 2147483646;
+  pointer-events: none;
+}
+
+/* Kart: daha küçük, oval, yumuşak gölge */
+.br-toast{
+  pointer-events: auto;
+  min-width: 210px;
+  max-width: 360px;
+  padding: 8px 10px;
+  border-radius: 10px;                /* küçük, köşeleri daha yuvarlak */
+  border: 1px solid rgba(255,255,255,.08);
+  color: #e9edf5;
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  transform: translateY(4px);
+  opacity: 0;
+  animation: br-toast-in .16s ease forwards;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0,0,0,.36);
+}
+
+/* Arkaplanlar: tip bazlı renk paleti */
+/* (Koyu degrade, görseldeki tat için biraz sıcak tonlar) */
+.br-toast--success{
+  background: linear-gradient(180deg, #0e2a1f, #0a1f18);
+  border-color: rgba(48, 209, 88, .22);
+}
+.br-toast--warning{
+  background: linear-gradient(180deg, #3a2b0f, #2c210c);
+  border-color: rgba(255, 214, 10, .22);
+}
+.br-toast--error{
+  background: linear-gradient(180deg, #341314, #251012);
+  border-color: rgba(255, 69, 58, .22);
+}
+.br-toast--info{
+  background: linear-gradient(180deg, #122036, #0e1a2a);
+  border-color: rgba(91, 140, 255, .22);
+}
+
+@keyframes br-toast-in { to { opacity: 1; transform: translateY(0); } }
+.br-toast.is-leaving{ animation: br-toast-out .16s ease forwards; }
+@keyframes br-toast-out { to { opacity: 0; transform: translateY(4px); } }
+
+/* Emoji rozeti (soldaki küçük kutu) */
+.br-toast__emj{
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  display: grid; place-items: center;
+  font-size: 14px;
+  background: rgba(255,255,255,.08);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+}
+/* rozetin rengi tona uyum sağlasın */
+.br-toast--success .br-toast__emj{ background: rgba(48,209,88,.15); }
+.br-toast--warning .br-toast__emj{ background: rgba(255,214,10,.16); }
+.br-toast--error   .br-toast__emj{ background: rgba(255,69,58,.16); }
+.br-toast--info    .br-toast__emj{ background: rgba(91,140,255,.16); }
+
+.br-toast__content{
+  font-size: 12px; line-height: 1.5;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.br-toast__actions{ display: flex; gap: 6px; }
+.br-toast__close, .br-toast__undo{
+  appearance: none;
+  background: transparent;
+  color: #e9edf5;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 8px;
+  padding: 2px 8px;
+  cursor: pointer;
+  font-size: 11px;
+}
+.br-toast__close:hover, .br-toast__undo:hover{
+  background: rgba(255,255,255,.08);
+}
+
+/* İnce progress çizgisi (alta) — tip rengine göre */
+.br-toast__progress{
+  position: absolute;
+  left: 0; bottom: 0; height: 2px; width: 0%;
+  transition: width linear;
+  opacity: .9;
+}
+.br-toast--success .br-toast__progress{ background:#30d158; }
+.br-toast--warning .br-toast__progress{ background:#ffd60a; }
+.br-toast--error   .br-toast__progress{ background:#ff453a; }
+.br-toast--info    .br-toast__progress{ background:#5B8CFF; }

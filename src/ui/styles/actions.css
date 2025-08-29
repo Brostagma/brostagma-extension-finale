@@ -1,0 +1,138 @@
+/* Actions kartı + butonlar (mevcut soft mavi→mor yaklaşım korunur) */
+:root{ --br-blueSoft: #6F7CFF; }
+
+.br-actions.br-card{
+  padding:10px;
+  background: color-mix(in oklab, var(--br-elev1) 92%, transparent);
+  border: 1px solid color-mix(in oklab, var(--br-border), #fff 8%);
+  border-radius:12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(0,0,0,.16);
+}
+.br-actions h3{ margin:0 0 8px; font-size:12px; color:#dde3ee; }
+.br-actions__row{ display:flex; gap:8px; margin-bottom:6px; flex-wrap:wrap; }
+
+/* Butonlar – normal: mavi-viyole cam, hover: soft mor cam yansıma */
+.br-btn{
+  position:relative; overflow:hidden;
+  padding:8px 12px; border-radius:999px; cursor:pointer; font-size:12px; color:#ecf1f8;
+  border:1px solid color-mix(in oklab, var(--br-blueSoft) 35%, var(--br-border) 65%);
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--br-bg) 85%, var(--br-blueSoft) 15%),
+      color-mix(in oklab, var(--br-bg) 94%, var(--br-blueSoft) 6%));
+  transition: transform .10s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease, opacity .18s ease, filter .22s ease;
+  backdrop-filter: blur(6px);
+}
+.br-btn::before{
+  content:""; position:absolute; inset:-2px; pointer-events:none;
+  background:
+    radial-gradient(120% 100% at 30% -10%, color-mix(in oklab, #ffffff 8%, transparent) 0%, transparent 60%),
+    linear-gradient(180deg, transparent 0%, color-mix(in oklab, var(--br-accent), transparent 90%) 100%);
+  mix-blend-mode: screen; opacity:0; filter: blur(.2px);
+  transition: opacity .22s ease, filter .22s ease;
+}
+.br-btn:hover{
+  transform:translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.18), 0 0 12px color-mix(in oklab, var(--br-accent-strong), transparent 85%), 0 0 0 1px color-mix(in oklab, var(--br-accent), #000 82%);
+  border-color: color-mix(in oklab, var(--br-accent), var(--br-border) 35%);
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--br-bg) 80%, var(--br-accent) 20%),
+      color-mix(in oklab, var(--br-bg) 90%, var(--br-accent-strong) 10%));
+}
+.br-btn:hover::before{ opacity:.18; }
+.br-btn:active{ transform:translateY(0); box-shadow:none; }
+.br-btn:disabled{ opacity:.55; cursor:not-allowed; }
+.br-btn:focus-visible{
+  outline:none;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--br-bg), #fff 30%), 0 0 0 4px color-mix(in oklab, var(--br-accent), #000 86%);
+}
+
+/* Özet satırı */
+.br-actions__summary{
+  margin-top:6px; padding:8px 10px; font-size:11px; color:#cbd3df;
+  background: color-mix(in oklab, var(--br-bg) 95%, transparent);
+  border:1px dashed color-mix(in oklab, var(--br-border), var(--br-accent) 12%);
+  border-radius:10px;
+  backdrop-filter: blur(6px);
+}
+
+/* ========================= */
+/* Düzenleme Modalı (3 kolon)*/
+/* ========================= */
+.br-teditmodal{
+  position:fixed; inset:0; z-index:2147483647;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transform:scale(.985);
+  transition: opacity .18s ease, transform .18s ease;
+  pointer-events:none;
+}
+.br-teditmodal.is-in{ opacity:1; transform:scale(1); pointer-events:auto; }
+
+.br-teditmodal__scrim{
+  position:absolute; inset:0; background:rgba(0,0,0,.45);
+  backdrop-filter: blur(2px);
+}
+
+.br-teditmodal__panel{
+  position:relative; width:min(920px, 95vw); max-height: 82vh;
+  background: color-mix(in oklab, var(--br-elev1) 94%, transparent);
+  border:1px solid color-mix(in oklab, var(--br-border), #fff 12%);
+  border-radius:14px; box-shadow: 0 20px 48px rgba(0,0,0,.35);
+  display:flex; flex-direction:column; overflow:hidden; pointer-events: auto;
+}
+
+.br-teditmodal__head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 12px;
+  border-bottom:1px solid color-mix(in oklab, var(--br-border), #fff 10%);
+}
+.br-teditmodal__head h4{ margin:0; font-size:13px; color:#e8eef8; }
+.br-teditmodal__close{
+  border:0; background:transparent; color:#e8eef8; font-size:18px; cursor:pointer; opacity:.8;
+}
+.br-teditmodal__close:hover{ opacity:1; }
+
+.br-teditmodal__body{ padding:10px 12px; }
+
+/* Grid: desktop 3 sütun, tablet 2, mobil 1 */
+.br-tedit__grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap:10px;
+}
+@media (max-width: 980px){
+  .br-tedit__grid{ grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px){
+  .br-tedit__grid{ grid-template-columns: 1fr; }
+}
+
+.br-tedit__col{ display:flex; flex-direction:column; gap:6px; }
+.br-tedit__label{ font-size:12px; color:#dfe5ee; }
+
+.br-tedit__ta{
+  width:100%; min-height: 260px; resize:vertical;
+  padding:10px; font-size:12px; line-height:1.4; color:#e8eef8;
+  border-radius:10px; outline:none;
+  border:1px solid color-mix(in oklab, var(--br-border), #fff 12%);
+  background: color-mix(in oklab, var(--br-bg) 94%, transparent);
+}
+@media (max-width: 980px){
+  .br-tedit__ta{ min-height: 200px; }
+}
+@media (max-width: 640px){
+  .br-tedit__ta{ min-height: 160px; }
+}
+.br-tedit__ta:focus{
+  border-color: color-mix(in oklab, var(--br-accent), #000 70%);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--br-accent), transparent 82%);
+}
+
+.br-teditmodal__foot{
+  display:flex; align-items:center; gap:8px; padding:10px 12px;
+  border-top:1px solid color-mix(in oklab, var(--br-border), #fff 10%);
+}
+.br-teditmodal__spacer{ flex:1; }

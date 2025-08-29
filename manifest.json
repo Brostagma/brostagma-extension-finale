@@ -1,0 +1,93 @@
+{
+  "manifest_version": 3,
+  "name": "Brostagma Trendyol kampanya tarayici",
+  "short_name": "Brostagma",
+  "version": "1.0.0",
+  "description": "Flaş ürünleri akıllı kurallarla tarar, kampanyaları filtreler, eşleşmeleri gösterir ve Excel’e aktarır.",
+  "icons": {
+    "16": "icons/brostagmaLogo_16x16.png",
+    "32": "icons/brostagmaLogo_32x32.png",
+    "48": "icons/brostagmaLogo_48x48.png",
+    "128": "icons/brostagmaLogo_128x128.png"
+  },
+
+  "action": {
+    "default_title": "Paneli Aç/Kapat",
+    "default_icon": {
+      "16": "icons/brostagmaLogo_16x16.png",
+      "32": "icons/brostagmaLogo_32x32.png"
+    }
+  },
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "permissions": [
+    "storage",
+    "downloads",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://*.trendyol.com/*"
+  ],
+
+  "content_scripts": [
+    {
+      "matches": ["https://*.trendyol.com/*"],
+      "js": [
+        "src/storage/storage.js",
+
+        "src/ui/content/panel.js",
+        "src/ui/content/header.js",
+        "src/ui/content/counters.js",
+        "src/ui/content/campaigns.js",
+        "src/ui/content/actions.js",
+        "src/ui/content/negatives.js",
+        "src/ui/content/island.js",
+        "src/ui/content/drag.js",
+        "src/ui/content/resize.js",
+        "src/ui/content/toasts.js",
+        "src/ui/content/scanHighlight.js",
+        "src/ui/content/dsOverlay.js",
+
+        "src/core/target/vendor/xlsx.min.js",
+        "src/core/target/parse.js",
+        "src/core/target/export.js",
+        "src/core/target/target.js",
+
+        "src/core/engine/rules/r1.js",
+        "src/core/engine/rules/r2.js",
+        "src/core/engine/rules/r3.js",
+        "src/core/engine/rules/r4.js",
+        "src/core/engine/rules/r5.js",
+        "src/core/engine/rules/r6.js",
+        "src/core/engine/rules/r7.js",
+        "src/core/engine/rules/r8.js",
+        "src/core/engine/rules/r9.js",
+        "src/core/engine/rules/r10.js",
+        "src/core/engine/rules/r11.js",
+        "src/core/engine/rules/r12.js",
+        "src/core/engine/rules/r13.js",
+        "src/core/engine/rules/r14.js",
+        "src/core/engine/scan.js",
+        "src/core/engine/match.js",
+        "src/core/engine/ds.js",
+        "src/core/engine/campaignsMatch.js"
+      ],
+      "css": [
+        "src/ui/styles/panel.css",
+        "src/ui/styles/header.css",
+        "src/ui/styles/counters.css",
+        "src/ui/styles/campaigns.css",
+        "src/ui/styles/actions.css",
+        "src/ui/styles/negatives.css",
+        "src/ui/styles/toasts.css",
+        "src/ui/styles/island.css",
+        "src/ui/styles/highlight.css",
+        "src/ui/styles/dsOverlay.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

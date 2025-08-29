@@ -1,0 +1,47 @@
+.br-ds-overlay {
+  position: fixed; inset: 0; background: rgba(6,10,24,.55);
+  display: none; align-items: center; justify-content: center;
+  z-index: 2147483646;
+  backdrop-filter: blur(2px);
+}
+.br-ds-overlay.is-open { display: flex; }
+
+.br-ds-card {
+  width: min(460px, 90vw);
+  background: #0b1020;
+  color: #eaf0ff;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.45);
+  padding: 18px 18px 16px;
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.br-ds-card h4 {
+  margin: 0 0 8px; font-size: 16px; font-weight: 700; letter-spacing:.2px;
+}
+
+.br-ds-card p {
+  margin: 0 0 12px; opacity: .95; font-size: 14px;
+}
+
+.br-ds-progress {
+  height: 8px; background: rgba(255,255,255,.12);
+  border-radius: 999px; overflow: hidden;
+}
+.br-ds-progress__bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #95c0ff, #60ffd6, #a07bff);
+  box-shadow: 0 0 18px rgba(150,80,255,.5);
+  transition: width .25s ease;
+}
+
+.br-ds-meta {
+  margin-top: 10px; display:flex; align-items:center; justify-content: space-between;
+  font-size: 13px; opacity: .9;
+}
+
+.br-ds-meta .pill {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 999px; padding: 2px 8px; font-weight: 600;
+}

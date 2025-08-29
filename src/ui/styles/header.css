@@ -1,0 +1,136 @@
+/* Header: cam + soft mor dokunuş */
+:root{
+  --br-blueSoft: #6F7CFF; /* normal durum mavi-viyole cam */
+}
+
+.br-header{
+  display:grid;
+  grid-template-columns: 1fr auto auto;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  background: color-mix(in oklab, rgba(20,24,32,.85) 92%, transparent);
+  border-bottom:1px solid color-mix(in oklab, var(--br-border), var(--br-accent) 16%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: box-shadow .22s ease, border-color .22s ease, background .22s ease;
+}
+.br-header:hover{
+  box-shadow:
+    0 4px 12px rgba(0,0,0,.18),
+    0 0 12px color-mix(in oklab, var(--br-accent-strong), #000 88%);
+  cursor: move;
+}
+
+/* Mini rozetleri */
+.br-miniBadges{ display:none; gap:6px; justify-self:center; flex-wrap:wrap; }
+#br-panel.br--mini .br-miniBadges{ display:flex; }
+
+.br-badge{
+  font-size:11px; font-weight:700;
+  padding:2px 6px; border-radius:999px;
+  background: color-mix(in oklab, var(--br-bg) 94%, #fff 6%);
+  border:1px solid color-mix(in oklab, var(--br-border), var(--br-accent) 16%);
+  color:#eef2f8;
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+}
+.br-badge--mini{ font-size:10px; padding:2px 6px;}
+
+/* Sağ aksiyonlar */
+.br-headerActions{ display:flex; gap:6px; }
+
+/* Header butonları — normal: mavi-viyole cam, hover: soft mor cam yansıma */
+.br-iconBtn,
+.br-close{
+  position:relative; overflow:hidden;
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--br-bg) 88%, var(--br-blueSoft) 12%),
+      color-mix(in oklab, var(--br-bg) 95%, var(--br-blueSoft) 5%));
+  color:#eef2f8;
+  border:1px solid color-mix(in oklab, var(--br-blueSoft) 35%, var(--br-border) 65%);
+  border-radius:8px;
+  width:26px; height:26px; cursor:pointer;
+  display:grid; place-items:center;
+  font-size:14px;
+  transition: transform .12s ease, background .22s ease, box-shadow .22s ease, border-color .22s ease, filter .22s ease;
+  backdrop-filter: blur(6px);
+}
+.br-close{ width:28px; height:28px; font-size:16px; }
+
+/* Cam yansıma */
+.br-iconBtn::before,
+.br-close::before{
+  content:"";
+  position:absolute; inset:-2px; pointer-events:none;
+  background:
+    radial-gradient(120% 100% at 30% -10%,
+      color-mix(in oklab, #ffffff 8%, transparent) 0%,
+      transparent 60%)
+    ,
+    linear-gradient(180deg,
+      transparent 0%,
+      color-mix(in oklab, var(--br-accent), transparent 90%) 100%);
+  mix-blend-mode: screen;
+  opacity:0; filter: blur(.2px);
+  transition: opacity .22s ease, filter .22s ease;
+}
+
+.br-iconBtn:hover,
+.br-close:hover{
+  transform: translateY(-1px);
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--br-bg) 80%, var(--br-accent) 20%),
+      color-mix(in oklab, var(--br-bg) 90%, var(--br-accent-strong) 10%));
+  border-color: color-mix(in oklab, var(--br-accent), var(--br-border) 35%);
+  box-shadow:
+    0 6px 14px rgba(0,0,0,.18),
+    0 0 10px color-mix(in oklab, var(--br-accent-strong), transparent 85%),
+    0 0 0 1px color-mix(in oklab, var(--br-accent), #000 82%);
+}
+.br-iconBtn:hover::before,
+.br-close:hover::before{ opacity:.18; }
+
+.br-iconBtn:focus-visible,
+.br-close:focus-visible{
+  outline:none;
+  box-shadow:
+    0 0 0 2px color-mix(in oklab, var(--br-bg), #fff 35%),
+    0 0 0 4px color-mix(in oklab, var(--br-accent), #000 80%);
+}
+
+.br-title{
+  font-weight:600;
+  letter-spacing:.2px;
+  color:#f2f6fb;
+  text-shadow: 0 0 4px color-mix(in oklab, var(--br-accent-strong), #000 84%);
+}
+
+/* ===== MINI MOD DÜZENİ (kritik düzeltme) ===== */
+/* Mini modda başlığı gizle, yalnızca rozet + aksiyonlar kalsın */
+#br-panel.br--mini { height: auto; width: 660px;}
+
+#br-panel.br--mini .br-title{ display:fixed; }
+
+/* Dosyalar hangi sırayla yüklense de küçük kutu sorunu yaşanmasın diye
+   mini modda header'ı net şekilde düzenliyoruz (yüksek özgüllük). */
+#br-panel.br--mini .br-header{
+  display:flex;                /* grid vs flex çakışmalarını önle */
+  align-items:center;
+  justify-content:space-between;
+  gap:6px;
+  padding:6px 8px;             /* minik header pedingi */
+}
+
+/* Rozetler mini modda görünür ve ortalı dursun */
+#br-panel.br--mini .br-miniBadges{
+  display:flex;
+  justify-content:center;
+  gap:6px;
+}
+
+/* Aksiyon butonları mini modda kompakt kalsın */
+#br-panel.br--mini .br-headerActions .br-iconBtn{ width:24px; height:24px; }
+#br-panel.br--mini .br-headerActions .br-close{   width:24px; height:24px; font-size:14px; }

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Brostagama – Flaş Ürün Avcısı 🕵️‍♂️✨</title>
+  <meta name="description" content="Flaş ürünleri akıllı kurallarla tarayan, kampanyaları yakalayan ve tek tıkla Excel’e aktaran tarayıcı eklentisi." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <!-- NAV -->
+    <nav class="nav">
+      <!-- DEĞİŞEN KISIM: logo içine görsel yerleştirildi -->
+      <a class="brand" href="#top" aria-label="Brostagama ana sayfa">
+        <span class="logo" aria-hidden="true">B
+        </span>
+        <strong>Brostagama</strong>
+      </a>
+      <div class="nav-links">
+        <a href="#ozellikler">Özellikler</a>
+        <a href="#nasil">Nasıl Çalışır?</a>
+        <a href="#sss">SSS</a>
+        <a href="#gizlilik">Gizlilik</a>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <header id="top" class="hero card">
+      <h1>Flaş Ürün Avcısı 🕵️‍♂️✨</h1>
+      <p class="lead">
+        Ürün kartlarını tarar, 14+ kural ile eşleştirir, kampanyaları süzer ve tek tıkla Excel’e indirir.
+        <span class="pill">⚡ Yerel, hızlı, esprili</span>
+      </p>
+      <div class="cta">
+        <a class="btn btn-primary" target="_blank" rel="noopener"
+           href="https://chromewebstore.google.com/detail/ohnaifhjbegbebmjdjcpjlpofjcobblk?utm_source=item-share-cb">
+          ➕ Chrome’a Ekle
+        </a>
+        <a class="btn btn-ghost" href="#ozellikler">Özelliklere Atla</a>
+      </div>
+    </header>
+
+    <!-- ÖZELLİKLER -->
+    <section id="ozellikler" class="section">
+      <h2>Özellikler</h2>
+      <div class="grid features">
+        <div class="card">
+          <h3>🔎 Akıllı Tarama</h3>
+          <p>Kartları güvenli tempoda dolaşır; <em>marka + ürün + alt başlık</em> üçlüsünü toplayıp kurallara sokar.</p>
+        </div>
+        <div class="card">
+          <h3>🚫 Negatif Anahtar</h3>
+          <p>Türkçe karakter/ı-İ uyumlu arama ile istenmeyenleri baştan eler; kartı eşleşmeye göndermeden <em>pass</em>.</p>
+        </div>
+        <div class="card">
+          <h3>🎯 Kampanya Filtresi</h3>
+          <p>“X Al Y Öde”, “2. Ürün %/TL”, “TL Kupon”, “Yetkili Satıcı”, “Birlikte Al Kazan”, “Çok Al Az Öde” …</p>
+        </div>
+        <div class="card">
+          <h3>🧭 Derin Tarama (DS)</h3>
+          <p>Kartta kampanya görünmüyorsa ürüne girip <strong>kategori</strong> ve <strong>kampanya başlıklarını</strong> kontrol eder.</p>
+        </div>
+        <div class="card">
+          <h3>⭐ Net Geri Bildirim</h3>
+          <p>Eşleşme → yıldız; pas → belirgin efekt. “Göz ucuyla kaçırdım” devri bitti.</p>
+        </div>
+        <div class="card">
+          <h3>⬇️ Excel Çıktısı</h3>
+          <p>Dosya adı: <code>YYYY-MM-DD - HH.mm - tt{tarama} - te{eşleşme}</code>. 1) Eşleşmeler 2) Özet 3) Detaylar.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- NASIL ÇALIŞIR -->
+    <section id="nasil" class="section">
+      <h2>Nasıl Çalışır?</h2>
+      <div class="grid how">
+        <div class="card step"><div class="n">1</div><strong>Hedeflerini gir</strong><br><small>Marka/ürün/kelime, negatifler…</small></div>
+        <div class="card step"><div class="n">2</div><strong>Tarama başlat</strong><br><small>Kartlar, insanî aralıklarla gezinir.</small></div>
+        <div class="card step"><div class="n">3</div><strong>Kampanyayı süz</strong><br><small>“X Al Y Öde” mi? Tamam.</small></div>
+        <div class="card step"><div class="n">4</div><strong>Excel’e indir</strong><br><small>Marka/Ürün/Fiyat/Birim Fiyat/Kampanya/Link.</small></div>
+      </div>
+    </section>
+
+    <!-- SSS -->
+    <section id="sss" class="section faq">
+      <h2>SSS</h2>
+      <div class="card qa">
+        <p class="q">Bu eklenti ücretli mi?</p>
+        <p class="a">Hayır. Tek maliyet: “Aaa bu da mı eşleşti?” diye atacağın minik sevinç nidaları.</p>
+      </div>
+      <div class="card qa">
+        <p class="q">Verilerim ne oluyor?</p>
+        <p class="a">Ayarların <code>chrome.storage.local</code>’da; Excel dosyası da bilgisayarında. Biz görmüyoruz.</p>
+      </div>
+      <div class="card qa">
+        <p class="q">Hangi kampanyalar?</p>
+        <p class="a">X Al Y Öde, 2. Ürün %/TL, Çok Al Az Öde, TL Kupon, Kupon Fırsatı, Yetkili Satıcı, Birlikte Al Kazan.</p>
+      </div>
+      <div class="card qa">
+        <p class="q">429 hatasıyla dost musunuz?</p>
+        <p class="a">İstekler “insan gibi” aralıklı; 429’a saygı, siteye sevgi.</p>
+      </div>
+    </section>
+
+    <!-- GİZLİLİK -->
+    <section id="gizlilik" class="section">
+      <h2>Gizlilik Politikası</h2>
+      <div class="card">
+        <h3>📌 Kapsam</h3>
+        <p>Bu politika <strong>Brostagama Tarayıcı</strong> için geçerlidir. Eklenti yerel çalışır; ürün kartlarını tarar, kuralları uygular ve istersen Excel’e aktarır.</p>
+      </div>
+      <div class="card">
+        <h3>🧾 Toplanan Veriler</h3>
+        <ul>
+          <li><strong>Yerel depolama:</strong> negatif anahtarlar, hedef liste, kampanya tercihleri, panel ayarları <code>chrome.storage.local</code>’da.</li>
+          <li><strong>Geçici veriler:</strong> eşleşmeler RAM üzerinde; indirme demezsen dışarı çıkmaz.</li>
+          <li><strong>İndirme:</strong> Excel dosyası <em>cihazında</em> oluşturulur.</li>
+          <li><strong>DS istekleri:</strong> Ürün sayfasına bakmak için ilgili siteye HTTP istekleri; başka sunucu yok.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🎛️ Kullanım Amaçları</h3>
+        <ul>
+          <li>Kuralları işletmek ve tercihlerini hatırlamak,</li>
+          <li>Kampanya filtrelerini uygulayıp eşleşmeleri göstermek,</li>
+          <li>İsteğe bağlı Excel dışa aktarımını üretmek.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🧩 İzinler</h3>
+        <ul>
+          <li><strong>storage</strong> – Ayarların saklanması,</li>
+          <li><strong>activeTab / scripting</strong> – Aktif sekmede çalışmak,</li>
+          <li><strong>downloads</strong> – Excel indirmek,</li>
+          <li><strong>host permissions</strong> – Hedef sitelerde çalışmak (örn. <em>*.trendyol.com</em>).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🗄️ Saklama & Kontroller</h3>
+        <ul>
+          <li>Tüm ayar/veriler tarayıcında; panelden temizleyebilirsin.</li>
+          <li>Eklentiyi kaldırınca hepsi silinir.</li>
+          <li>İndirdiğin Excel dosyaları bilgisayarındadır.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>🤝 Üçüncü Taraflar</h3>
+        <p>Verilerini paylaşmayız; reklam, analitik veya takip hizmeti kullanmayız.</p>
+      </div>
+      <div class="card">
+        <h3>🛡️ Güvenlik</h3>
+        <p>İstekler insanî aralıklarla yapılır (429’a saygı). İzinler minimumda tutulur.</p>
+        <p class="muted">Son güncelleme: <span id="giz-date"></span></p>
+      </div>
+    </section>
+
+    <footer class="foot">
+      © <span id="year"></span> Brostagama •
+      <a target="_blank" rel="noopener"
+         href="https://chromewebstore.google.com/detail/ohnaifhjbegbebmjdjcpjlpofjcobblk?utm_source=item-share-cb">Uzantıyı Gör</a>
+      <br><small>“Eşleşmeyi bulur, Excel’e koyar.”</small>
+    </footer>
+  </div>
+
+  <!-- YÜZEN ADA -->
+  <a class="install-island" target="_blank" rel="noopener"
+     href="https://chromewebstore.google.com/detail/ohnaifhjbegbebmjdjcpjlpofjcobblk?utm_source=item-share-cb"
+     aria-label="Brostagama eklentisini yükle">
+    <img class="island-img"
+         src="photo/icons/brostagmaLogo_128x128.png"
+         srcset="photo/icons/brostagmaLogo_128x128.png 1x, photo/icons/brostagmaLogo_128x128.png 2x"
+         alt="" width="40" height="40" />
+    <div class="island-meta">
+      <span class="island-eyebrow">Hemen Kur</span>
+      <span class="island-text">Uzantıyı Yükle</span>
+    </div>
+  </a>
+
+  <script>
+    const d = new Date(), pad = n => String(n).padStart(2,'0');
+    document.getElementById('year').textContent = d.getFullYear();
+    document.getElementById('giz-date').textContent = `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`;
+    const island = document.querySelector('.install-island');
+    setTimeout(()=> island.classList.add('show'), 500);
+    let lastY = window.scrollY;
+    addEventListener('scroll', () => {
+      const dirUp = window.scrollY < lastY;
+      island.classList.toggle('float-up', dirUp);
+      lastY = window.scrollY;
+    }, { passive: true });
+  </script>
+</body>
+</html>
