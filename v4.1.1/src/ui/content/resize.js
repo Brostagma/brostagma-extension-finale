@@ -204,7 +204,7 @@
     // İlk mount’ta da dene
     const ok = await restoreSize();
     if (!ok){
-      const defaultW = 500, defaultH = 500;
+      const defaultW = 625, defaultH = 625;
       const clamped = clampToViewport(defaultW, defaultH);
       setWH(clamped.w, clamped.h, { silent:true });
       await writeState({ width: clamped.w, height: clamped.h });

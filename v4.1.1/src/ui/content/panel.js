@@ -13,21 +13,21 @@
   const KEY_STATE = 'panel:state';
 
   // Güvenli başlangıç boyutu (resize.js sonrasında persistten restore eder)
-  const DEFAULT_W = 500;
-  const DEFAULT_H = 520;
+  const DEFAULT_W = 800;
+  const DEFAULT_H = 650;
 
   async function readState() {
     try {
       if (ns.storage?.get) return await ns.storage.get(KEY_STATE, null);
       if (typeof chrome !== 'undefined' && chrome?.storage?.local) {
-        const out = await new Promise((r)=>chrome.storage.local.get(KEY_STATE,(v)=>r(v)));
+        const out = await new Promise((r) => chrome.storage.local.get(KEY_STATE, (v) => r(v)));
         return out?.[KEY_STATE] || null;
       }
-    } catch {}
+    } catch { }
     try {
       const raw = localStorage.getItem(KEY_STATE);
       return raw ? JSON.parse(raw) : null;
-    } catch {}
+    } catch { }
     return null;
   }
   async function writeState(patch) {
@@ -36,11 +36,11 @@
     try {
       if (ns.storage?.set) return await ns.storage.set(KEY_STATE, next);
       if (typeof chrome !== 'undefined' && chrome?.storage?.local) {
-        await new Promise((r)=>chrome.storage.local.set({ [KEY_STATE]: next }, r));
+        await new Promise((r) => chrome.storage.local.set({ [KEY_STATE]: next }, r));
         return;
       }
-    } catch {}
-    try { localStorage.setItem(KEY_STATE, JSON.stringify(next)); } catch {}
+    } catch { }
+    try { localStorage.setItem(KEY_STATE, JSON.stringify(next)); } catch { }
   }
 
   function ensureProgressBelowCounters() {
@@ -65,7 +65,7 @@
   function setProgress({ value = null, color = 'accent' } = {}) {
     if (!progressEl) return;
     const fill = progressEl.querySelector('.br-progress__fill');
-    progressEl.classList.remove('br-progress--accent','br-progress--success','br-progress--warn','br-progress--error','br-progress--indeterminate');
+    progressEl.classList.remove('br-progress--accent', 'br-progress--success', 'br-progress--warn', 'br-progress--error', 'br-progress--indeterminate');
     progressEl.classList.add(`br-progress--${color}`);
 
     if (value === null) {
@@ -79,7 +79,7 @@
   }
 
   // 🔒 Panel kilidi: inline stil + overlay node
-  function ensureLockStyles(){
+  function ensureLockStyles() {
     if (document.getElementById('br-panel-lock-styles')) return;
     const css = `
       #br-panel .br-panel-lock{
@@ -100,7 +100,7 @@
     style.textContent = css;
     document.documentElement.appendChild(style);
   }
-  function ensureLockOverlay(){
+  function ensureLockOverlay() {
     if (!ns.panel?.el) return;
     if (lockEl?.isConnected) return;
     ensureLockStyles();
@@ -115,7 +115,7 @@
     lockEl.appendChild(card);
     ns.panel.el.appendChild(lockEl);
   }
-  function setLock(on, text){
+  function setLock(on, text) {
     ensureLockOverlay();
     if (typeof text === 'string' && lockMsgEl) lockMsgEl.textContent = text;
     if (lockEl) lockEl.style.display = on ? 'flex' : 'none';
@@ -145,7 +145,7 @@
       try {
         root.style.width = `${DEFAULT_W}px`;
         root.style.setProperty('--br-panel-h', `${DEFAULT_H}px`);
-      } catch {}
+      } catch { }
 
       this.el = root;
       this.headerEl = header;
@@ -215,10 +215,11 @@
   document.addEventListener('br:progress:set', (e) => setProgress(e.detail || {}));
   document.addEventListener('br:status:set', (e) => {
     const d = e.detail || {};
-    setProgress({ value: d.progress ?? null, color:
-      d.type === 'success' ? 'success' :
-      d.type === 'warning' ? 'warn' :
-      d.type === 'error'   ? 'error' : 'accent'
+    setProgress({
+      value: d.progress ?? null, color:
+        d.type === 'success' ? 'success' :
+          d.type === 'warning' ? 'warn' :
+            d.type === 'error' ? 'error' : 'accent'
     });
   });
 

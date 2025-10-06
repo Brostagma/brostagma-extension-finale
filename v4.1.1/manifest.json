@@ -19,8 +19,8 @@
   "action": {
     "default_title": "Paneli Aç/Kapat",
     "default_icon": {
-      "16": "icons/brostagmaLogo_16x16.png",
-      "32": "icons/brostagmaLogo_32x32.png"
+      "16": "icons/brostagmalogo_16x16.png",
+      "32": "icons/brostagmalogo_32x32.png"
     }
   },
 
