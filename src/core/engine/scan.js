@@ -247,17 +247,18 @@
           // Kart üzerinde "pass" görselini tetikle
           showPassEmoji(el);
         } else if (result && result.ok){
-          // 🔸 Son onay: kampanya filtresi (kart üstünden)
-          const passByCampaign = !!(window.BR?.campaignsMatch) && !window.BR.campaignsMatch.accept(bundle);
-          if (passByCampaign){
-            // ✅ Kartta yok ama ürün sayfasında olabilir: DS'e "kampanya kontrolü" işi ekle
+          // 🔸 Son onay: kampanya filtresi aktifse, kartta "geçiyor" gibi görünse bile teyit için DS'e gönder.
+          // Karttaki kampanya bilgisi eksik/yanlış olabilir, ürün sayfasında kesinleşir.
+          const campaignCheckActive = !!(window.BR?.campaignsMatch);
+          if (campaignCheckActive){
             try{
-              document.dispatchEvent(new CustomEvent("br:scan:highlight", { detail:{ el, state:"dt" }})); // arka plan kontrol hissi
+              document.dispatchEvent(new CustomEvent("br:scan:highlight", { detail:{ el, state:"dt" }})); // "kontrol ediliyor" hissi
               document.dispatchEvent(new CustomEvent("br:ds:enqueue", {
                 detail: { el, url: bundle.url, bundle, checkCampaignOnly:true }
               }));
             }catch(_){}
           } else {
+            // Kampanya filtresi yoksa, direkt match.
             try { el.setAttribute("data-br-match","1"); } catch {}
             document.dispatchEvent(new CustomEvent("br:scan:highlight", { detail:{ el, state:"match" }}));
             document.dispatchEvent(new CustomEvent("br:scan:match", {
