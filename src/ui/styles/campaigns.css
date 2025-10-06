@@ -1,82 +1,68 @@
-.br-campaigns h3{
-  margin:0 0 10px; font-size:14px; color:#dfe5ee; letter-spacing:.2px;
+/* src/ui/styles/campaigns.css */
+/* GÖRSEL GÜNCELLEME V3: Yeni Kobalt Mavisi teması */
+
+.br-campaigns h3 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--br-text-primary);
 }
 
-/* Bu kartın mor neon teması (JS'te de set ediliyor, burada güvenli varsayılan) */
-.br-campaigns{
-  --br-accent: #7A2FFF;         /* koyu mor (ana) */
-  --br-accent-strong: #9B5CFF;  /* iç parıltı için daha açık mor */
+.br-campaigns__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
 }
 
-/* auto-fit: sütun sayısı alan genişliğine göre artar/azalır */
-.br-campaigns__grid{
-  display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap:8px;
-}
-
-/* Chip: yarı transparan cam + glow’lar */
-.br-chip{
-  appearance:none;
-  border: 1px solid color-mix(in oklab, var(--br-border, #31374a), #fff 8%);
-  background: linear-gradient(180deg,
-              color-mix(in oklab, var(--br-bg, #12151c) 90%, #fff 10%),
-              color-mix(in oklab, var(--br-bg, #12151c) 96%, #fff 4%));
-  color:#e9eef8;
-  padding:6px 10px;
+/* Çip Stili */
+.br-chip {
+  appearance: none;
+  border: 1px solid var(--br-border);
+  background-color: var(--br-elev1);
+  color: var(--br-text-secondary);
+  padding: 6px 12px;
   border-radius: 999px;
-  cursor:pointer;
-  font-size:11px;
-  letter-spacing:.2px;
-  box-shadow: inset 0 3px 12px rgba(0,0,0,.18);
-  transition:
-    transform .08s ease,
-    box-shadow .2s ease,
-    border-color .2s ease,
-    background .2s ease,
-    color .2s ease;
-  backdrop-filter: blur(8px);
-}
-.br-chip:hover{
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(0,0,0,.20);
-  border-color: color-mix(in oklab, var(--br-border, #31374a), #fff 18%);
-  background: linear-gradient(180deg,
-              color-mix(in oklab, var(--br-bg, #12151c) 84%, #fff 16%),
-              color-mix(in oklab, var(--br-bg, #12151c) 92%, #fff 8%));
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  transition: all .2s ease;
+  user-select: none;
+  white-space: nowrap;
 }
 
-/* ✅ Seçili durum — koyu mor neon */
-.br-campaigns .br-chip.is-selected,
-.br-campaigns__grid .br-chip.is-selected,
-.br-chip.is-selected[aria-pressed="true"]{
-  color:#fff;
-  border-color: color-mix(in oklab, var(--br-accent, #7A2FFF), #000 18%);
-  background: radial-gradient(120% 120% at 50% 10%,
-              color-mix(in oklab, var(--br-accent-strong, #9B5CFF) 28%, transparent),
-              transparent 60%) ,
-              linear-gradient(180deg,
-              color-mix(in oklab, var(--br-accent, #7A2FFF) 20%, var(--br-bg, #12151c)),
-              color-mix(in oklab, var(--br-accent, #7A2FFF) 10%, var(--br-bg, #12151c)));
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--br-accent, #7A2FFF), #fff 22%),
-    0 10px 26px color-mix(in oklab, var(--br-accent, #7A2FFF), #000 70%),
-    inset 0 10px 30px color-mix(in oklab, var(--br-accent-strong, #9B5CFF), #000 65%);
-  text-shadow: 0 0 10px color-mix(in oklab, var(--br-accent-strong, #9B5CFF), #fff 20%);
+.br-chip:hover:not(.is-selected) {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--br-text-secondary) 50%, transparent);
+  color: var(--br-text-primary);
+  background-color: var(--br-bg);
 }
 
-/* Klavye odak görünürlüğü: mor halka */
-.br-chip:focus-visible{
+/* Seçili Durum (Yeni Renk) */
+.br-chip.is-selected {
+  background-color: var(--br-accent);
+  border-color: var(--br-accent);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--br-accent) 25%, transparent);
+}
+
+/* Klavye Odak Görünürlüğü (Yeni Renk) */
+.br-chip:focus-visible {
   outline: none;
-  box-shadow:
-    0 0 0 2px color-mix(in oklab, var(--br-bg, #12151c), #fff 50%),
-    0 0 0 4px color-mix(in oklab, var(--br-accent, #7A2FFF), #fff 35%);
+  box-shadow: 0 0 0 2px var(--br-bg), 0 0 0 4px var(--br-accent);
 }
 
-/* Minik bounce (JS tetikliyor) */
-.br-chip.bump{ transform: scale(1.02); }
+/* Tıklama Animasyonu */
+.br-chip.bump {
+  transform: scale(0.95);
+  transition: transform .1s ease;
+}
 
-.br-campaigns__footer{
-  margin-top:6px; color:#a7afbd; font-size:11px;
-  display:flex; justify-content:flex-end;
+.br-campaigns__footer {
+  margin-top: 10px;
+  color: var(--br-text-secondary);
+  font-size: 12px;
+  display: flex;
+  justify-content: flex-end;
 }

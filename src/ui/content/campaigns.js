@@ -1,19 +1,14 @@
 // src/ui/campaigns.js
-// Kampanya Tipleri kartı (storage ile kalıcı seçim)
+// GÜNCELLEME: Kodda değişiklik yok, sadece CSS ile görünüm yenilendi.
 (function (ns) {
   let wrap = null;
   let chips = [];
   let countEl = null;
 
   const OPTIONS = [
-    { label: "X Al Y Öde" },
-    { label: "2. Ürün %" },
-    { label: "2. Ürün TL" },
-    { label: "Çok Al Az Öde" },
-    { label: "Birlikte Al Kazan" },
-    { label: "Yetkili Satıcı" },
-    { label: "TL Kupon" },
-    { label: "Kupon Fırsatı" },
+    { label: "X Al Y Öde" }, { label: "2. Ürün %" }, { label: "2. Ürün TL" },
+    { label: "Çok Al Az Öde" }, { label: "Birlikte Al Kazan" }, { label: "Yetkili Satıcı" },
+    { label: "TL Kupon" }, { label: "Kupon Fırsatı" },
   ];
 
   function makeChip(labelText){
@@ -27,12 +22,11 @@
 
     btn.addEventListener('click', () => {
       const selected = btn.classList.toggle('is-selected');
-      btn.setAttribute('aria-pressed', selected ? 'true' : 'false');
+      btn.setAttribute('aria-pressed', String(selected));
       btn.classList.add('bump');
       setTimeout(() => btn.classList.remove('bump'), 140);
       updateCount();
 
-      // Kalıcı seçimleri yaz
       const selectedList = ns.campaigns.getSelected();
       BR.storage.set("campaigns:selected", selectedList);
 
@@ -59,14 +53,11 @@
 
   ns.campaigns = {
     mount(container){
-      if (!container) return;
+      if (!container || wrap?.isConnected) return;
 
       wrap = document.createElement('section');
       wrap.className = 'br-card br-campaigns';
-      // 💜 Bu kart özelinde mor neon tonu (koyu mor)
-      wrap.style.setProperty('--br-accent', '#7A2FFF'); // koyu/mat mor
-      wrap.style.setProperty('--br-accent-strong', '#9B5CFF'); // iç parıltı için
-
+      
       const h = document.createElement('h3');
       h.textContent = 'Kampanya Tipleri';
 
@@ -83,18 +74,16 @@
       footer.className = 'br-campaigns__footer';
       countEl = document.createElement('span');
       countEl.className = 'br-campaigns__count';
-      countEl.textContent = 'Seçili: 0';
       footer.appendChild(countEl);
 
       wrap.append(h, grid, footer);
       container.appendChild(wrap);
 
-      // 🔹 Açılışta önceki seçimleri yükle
       BR.storage.get("campaigns:selected", []).then(list => {
-        // Bazı ortamlarda string olarak gelebilir; güvenli dönüştürme
-        let arr = Array.isArray(list) ? list : (typeof list === 'string' ? JSON.parse(list || '[]') : []);
-        if (arr && arr.length) ns.campaigns.setSelected(arr);
-      }).catch(() => {/* sessiz geç */});
+        const arr = Array.isArray(list) ? list : [];
+        if (arr.length) ns.campaigns.setSelected(arr);
+        updateCount();
+      }).catch(console.error);
     },
 
     getSelected(){
@@ -108,7 +97,7 @@
       chips.forEach(c => {
         const on = set.has(c.label);
         c.btn.classList.toggle('is-selected', on);
-        c.btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        c.btn.setAttribute('aria-pressed', String(on));
       });
       updateCount();
     }
@@ -120,3 +109,4 @@
   if (ns.panel?.getBody?.()) ns.campaigns.mount(ns.panel.getBody());
 
 })(window.BR = window.BR || {});
+

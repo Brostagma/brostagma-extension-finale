@@ -1,113 +1,135 @@
-/* src/ui/island.css */
-/* Panel sağ bitişine hizalı "yüzen ada" stilleri
-   - Soft mavi→mor cam görünüm
-   - Hover'da yumuşak neon; paneli boğmaz
-   - Panel içindeki eski scan CTA'sını gizler (kaldırma yerine güvenli gizleme) */
+/* src/ui/styles/island.css */
+/* GÖRSEL GÜNCELLEME V7: "Solid & Bright" Teması - Maksimum Okunabilirlik */
 
-:root{ --br-blueSoft: #6F7CFF; }
+:root {
+  /* Panel'den gelen ana renk ve durum renkleri */
+  --island-accent: #7A2FFF;
+  --island-error: #ff453a;
+  --island-success: #30d158;
 
-/* (eski panel içi buton) güvenli gizleme */
-.br-scanCtrl,
-.br-btn.br-btn--scan{
-  display: none !important;
+  /* Yeni açık tema buton renkleri */
+  --island-bg-light: #f0f2f6;
+  --island-text-dark: #141821;
+  --island-bg-disabled: #e4e6eb;
+  --island-text-disabled: #9a9fad;
+  --island-border-light: #d1d5db;
 }
 
-/* ================ ADA ================ */
-
-.br-island{
-  position: fixed; /* konumu island.js hesaplıyor */
+.br-island {
+  position: fixed;
   z-index: 2147483647;
   display: grid;
-  gap: 10px;
-  pointer-events: none; /* yalnız butonlar tıklanabilir */
-}
-
-.br-island--stack{ grid-auto-flow: row; }
-
-.br-island__btn{
-  pointer-events: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  border: 1px solid color-mix(in oklab, var(--br-border), #fff 8%);
-  border-radius: 16px;
-  padding: 12px 14px;
-  color: #fff;
-  font-weight: 700;
-  letter-spacing: .1px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: transform .12s ease, box-shadow .22s ease, border-color .22s ease, background .22s ease, opacity .22s ease;
-  box-shadow:
-    0 8px 24px rgba(0,0,0,.28),
-    0 0 0 1px color-mix(in oklab, var(--br-accent), #000 85%);
-}
-
-.br-island__icon{
-  width: 18px; height: 18px; display:inline-grid; place-items:center;
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,.35));
-}
-
-.br-island__label{ font-size: 13px; }
-
-/* Scan: mavi-viyole cam → hover'da soft koyu mor */
-.br-island__btn--scan{
-  background:
-    linear-gradient(180deg,
-      color-mix(in oklab, var(--br-bg) 84%, var(--br-blueSoft) 16%),
-      color-mix(in oklab, var(--br-bg) 92%, var(--br-blueSoft) 8%));
-  border-color: color-mix(in oklab, var(--br-blueSoft) 35%, var(--br-border) 65%);
-}
-.br-island__btn--scan:hover{
-  transform: translateY(-1px);
-  cursor: pointer;
-  background:
-    linear-gradient(180deg,
-      color-mix(in oklab, var(--br-bg) 78%, var(--br-accent) 22%),
-      color-mix(in oklab, var(--br-bg) 88%, var(--br-accent-strong) 12%));
-  border-color: color-mix(in oklab, var(--br-accent), var(--br-border) 35%);
-  box-shadow:
-    0 12px 28px rgba(0,0,0,.30),
-    0 0 14px color-mix(in oklab, var(--br-accent-strong), transparent 82%),
-    0 0 0 1px color-mix(in oklab, var(--br-accent), #000 80%);
-}
-.br-island__btn--scan.is-on{
-  background: linear-gradient(180deg, #2b2f3f, #1f2332);
-  border-color: color-mix(in oklab, var(--br-border), #fff 10%);
-  box-shadow: 0 8px 20px rgba(0,0,0,.25);
-}
-
-/* Export: pasif/aktif */
-.br-island__btn--export{
-  background:
-    linear-gradient(180deg,
-      color-mix(in oklab, var(--br-bg) 92%, #2ad1b2 8%),
-      color-mix(in oklab, var(--br-bg) 96%, #2ad1b2 4%));
-  border-color: color-mix(in oklab, #2ad1b2 35%, var(--br-border) 65%);
-}
-.br-island__btn--export:hover{
-  transform: translateY(-1px);
-  box-shadow:
-    0 12px 28px rgba(0,0,0,.30),
-    0 0 14px color-mix(in oklab, var(--br-accent-strong), transparent 82%),
-    0 0 0 1px color-mix(in oklab, var(--br-accent), #000 80%);
-    cursor: pointer;
-}
-.br-island__btn--export.is-disabled{
-  opacity:.55; cursor:not-allowed; filter:grayscale(.15);
-  transform:none !important;
-}
-
-/* 🔒 ADA KİLİT DURUMU: dsOverlay açıkken */
-.br-island.is-locked .br-island__btn{
+  gap: 16px;
   pointer-events: none;
-  opacity: .55;
-  filter: grayscale(.2);
+}
+
+/* Buton Genel Stili - Yeni Tasarım */
+.br-island__btn {
+  position: relative;
+  overflow: hidden;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 50px;
+  padding: 0 24px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  
+  /* GÜNCELLEME: Cam efekti kaldırıldı, solid arka plan ve siyah metin eklendi */
+  background: var(--island-bg-light);
+  color: var(--island-text-dark);
+  border: 1px solid var(--island-border-light);
+  box-shadow: 0 4px 8px hsla(220, 20%, 50%, 0.1), 0 8px 24px hsla(220, 20%, 50%, 0.1);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  text-shadow: none;
+
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Hover & Active Efektleri */
+.br-island__btn:hover:not([aria-disabled="true"]) {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px hsla(220, 20%, 50%, 0.15), 0 12px 32px hsla(220, 20%, 50%, 0.15);
+}
+.br-island__btn:active:not([aria-disabled="true"]) {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px hsla(220, 20%, 50%, 0.12);
+  transition-duration: .05s;
+}
+
+.br-island__icon, .br-island__label { z-index: 2; }
+.br-island__btn svg { width: 22px; height: 22px; }
+
+/* Tarama Butonu: Normal Durum */
+.br-island__btn--scan {
+  border: 2px solid var(--island-accent);
+  background-color: #fff; /* Vurgu rengiyle daha iyi kontrast için tam beyaz */
+}
+.br-island__btn--scan .br-island__icon svg {
+  color: var(--island-accent);
+}
+
+/* Tarama Butonu: Aktif Durum (Tarama Başladı) */
+.br-island__btn--scan.is-on {
+  background: var(--island-error);
+  color: #fff;
+  border-color: var(--island-error);
+}
+.br-island__btn--scan.is-on .br-island__icon svg,
+.br-island__btn--scan.is-on .br-island__label {
+  color: #fff;
+}
+.br-island__btn--scan.is-on .br-island__icon--play { display: none; }
+.br-island__btn--scan:not(.is-on) .br-island__icon--stop { display: none; }
+
+
+/* İndir Butonu: Pasif Durum */
+.br-island__btn--export {
+  background: var(--island-bg-disabled);
+  color: var(--island-text-disabled);
+  border-color: transparent;
+  box-shadow: none;
   cursor: not-allowed;
 }
+.br-island__btn--export .br-island__icon svg {
+  color: var(--island-text-disabled);
+}
+.br-island__btn--export:not(.is-ready):hover {
+  transform: none;
+  box-shadow: none;
+}
 
-/* Küçük ekran içe al */
-@media (max-width: 540px){
-  .br-island__btn{ padding:10px 12px; border-radius:14px; }
-  .br-island__label{ font-size:12px; }
+/* İndir Butonu: Hazır Durum */
+.br-island__btn--export.is-ready {
+  background: var(--island-success);
+  color: #fff;
+  border-color: var(--island-success);
+  animation: br-island-pop-in .4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.br-island__btn--export.is-ready .br-island__icon svg,
+.br-island__btn--export.is-ready .br-island__label {
+  color: #fff;
+}
+.br-island__btn--export.is-ready:hover {
+   box-shadow: 0 8px 25px color-mix(in srgb, var(--island-success) 35%, transparent);
+}
+
+@keyframes br-island-pop-in {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Kilitli Durum */
+.br-island.is-locked .br-island__btn {
+  pointer-events: none;
+  opacity: .5 !important;
+  cursor: not-allowed;
+  filter: grayscale(80%);
+  transform: none !important;
+  box-shadow: none !important;
+  animation: none !important;
 }

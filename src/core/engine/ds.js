@@ -7,7 +7,7 @@
   const rnd = (a,b)=> a + Math.floor(Math.random()*((b-a)+1));
 
   const CONF = {
-    maxQueue: 60,
+    maxQueue: 180,
     throttleMs: [350, 650],   // istekler arası nefes
     backoffBase: 700,         // 429 sonrası taban bekleme
     maxAttempts: 3,           // 429/bağlantı hatasında en fazla deneme
