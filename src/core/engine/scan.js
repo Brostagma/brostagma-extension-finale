@@ -8,13 +8,14 @@
   let scanCountBase = 0;
   let scanCount = 0;
 
-  // ⚙️ Pace ayarları (güvenli)
-  const FIXED_DWELL_MS    = 380; // her kartta en az bu kadar "scanning" göster
-  const READY_TIMEOUT_MS  = 1200; // brand/name/sub-text hazır olana kadar en fazla bu kadar bekle
-  const READY_POLL_MS     = 80;
-  const STABLE_WINDOW_MS  = 160;  // DOM text uzunlukları şu kadar süre değişmiyorsa "kararlı"
-  const INTER_CARD_DELAY  = 90;   // kartlar arası nefes
-  const RAND_JITTER_MS    = [15, 45]; // ekstra ufak beklemeler (insanî akış)
+  // ⚙️ Pace ayarları (Hızlandırılmış)
+  const FIXED_DWELL_MS    = 80;   // her kartta en az bu kadar "scanning" göster (düşürüldü)
+  const READY_TIMEOUT_MS  = 800;  // brand/name/sub-text hazır olana kadar en fazla bu kadar bekle (düşürüldü)
+  const READY_POLL_MS     = 40;   // daha sık kontrol (düşürüldü)
+  const STABLE_WINDOW_MS  = 80;   // DOM text uzunlukları şu kadar süre değişmiyorsa "kararlı" (düşürüldü)
+  const INTER_CARD_DELAY  = 40;   // kartlar arası nefes (düşürüldü)
+  const RAND_JITTER_MS    = [10, 30]; // ekstra ufak beklemeler (ayarlandı)
+
 
   const sleep = ms => new Promise(r => setTimeout(r, ms));
   const rnd = (a,b)=> a + Math.floor(Math.random()*((b-a)+1));
@@ -319,4 +320,4 @@
     })();
   });
   document.addEventListener("br:scan:stop", ()=>{ stopFlag = true; });
-})();
+})()

@@ -93,7 +93,6 @@
   color: var(--island-text-disabled);
   border-color: transparent;
   box-shadow: none;
-  cursor: not-allowed;
 }
 .br-island__btn--export .br-island__icon svg {
   color: var(--island-text-disabled);
@@ -127,7 +126,6 @@
 .br-island.is-locked .br-island__btn {
   pointer-events: none;
   opacity: .5 !important;
-  cursor: not-allowed;
   filter: grayscale(80%);
   transform: none !important;
   box-shadow: none !important;

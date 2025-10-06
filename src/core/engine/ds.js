@@ -8,12 +8,16 @@
 
   const CONF = {
     maxQueue: 180,
-    throttleMs: [350, 650],   // istekler arası nefes
+    // YENİ: Aynı anda çalışacak maksimum derin tarama işlemi sayısı.
+    // Sunucuya aşırı yüklenmemek için 2, 3 veya 4 gibi makul bir değerde tutulmalıdır.
+    maxActive: 3,
+    throttleMs: [450, 750],   // istekler arası nefes (biraz artırıldı)
     backoffBase: 700,         // 429 sonrası taban bekleme
     maxAttempts: 3,           // 429/bağlantı hatasında en fazla deneme
   };
 
   const Q = [];
+  // DEĞİŞTİ: `active` artık bir kilit değil, aktif çalışan işçi sayısı.
   let active = 0;
   let processed = 0;
   let plannedTotal = 0;
@@ -41,25 +45,44 @@
     Q.push({ id, ...item });
     plannedTotal++;
     metrics();
+    // Her eklemede pump'ı tetikle, belki boşta bir işçi vardır.
     pump();
   }
 
-  async function pump(){
-    if (active>0 || stopped) return;
-    if (Q.length===0){ drained(); return; }
-    active = 1; metrics();
-    try{
-      while(Q.length && !stopped){
-        const item = Q.shift();
-        await processItem(item);
-        processed++;
-        await sleep(rnd(CONF.throttleMs[0], CONF.throttleMs[1]));
-        metrics();
-      }
-    } finally {
-      active = 0; metrics(); drained();
+  // DEĞİŞTİ: pump fonksiyonu artık bir "yönetici" (dispatcher).
+  // Kuyrukta iş ve boşta işçi varsa, yeni işçileri başlatır.
+  function pump(){
+    // Durdurulmuşsa veya boşta işçi yoksa veya kuyruk boşsa bir şey yapma.
+    if (stopped) return;
+
+    while (active < CONF.maxActive && Q.length > 0) {
+      active++; // Yeni bir işçi başlat, sayacı artır.
+      metrics();
+
+      const item = Q.shift();
+
+      // İşçiyi "ateşle ve unut" (fire-and-forget) mantığıyla başlatıyoruz.
+      // `await` kullanmıyoruz ki pump fonksiyonu diğer işçileri de başlatabilsin.
+      (async () => {
+        try {
+          await processItem(item);
+          processed++;
+        } catch (err) {
+          // Hata durumunda bile iş akışının devam etmesi önemli.
+          console.error(`[DS] Process item failed for ${item.url}`, err);
+          // İsteğe bağlı olarak burada item'ı tekrar kuyruğa ekleyebilirsiniz.
+        } finally {
+          active--; // İşçi işini bitirdi, sayacı azalt.
+          // Bir işçi bittiğinde, bir sonraki iş için biraz nefes al.
+          await sleep(rnd(CONF.throttleMs[0], CONF.throttleMs[1]));
+          metrics();
+          drained(); // Sistem tamamen durmuş olabilir mi kontrol et.
+          pump();    // Yeni bir işçinin başlayıp başlayamayacağını kontrol etmek için pump'ı tekrar tetikle.
+        }
+      })();
     }
   }
+
 
   async function fetchWithBackoff(url){
     let attempt = 0;
@@ -84,6 +107,7 @@
   }
 
   // ---------- Ürün sayfasından veri çıkarıcılar ----------
+  // Bu kısımlar değişmediği için kısaltılmıştır.
   function extractBreadcrumbs(html){
     try{
       const doc = new DOMParser().parseFromString(html, "text/html");
@@ -105,9 +129,6 @@
     }catch(_){ return []; }
   }
 
-  // 🔧 Daha dayanıklı kampanya çıkarımı:
-  // 1) Promosyon konteynerleri içinde geniş bir selektör seti
-  // 2) Yine boşsa fallback: tüm sayfa metninde TR-normalize regex araması
   function extractPageCampaigns(html){
     try{
       const doc = new DOMParser().parseFromString(html, "text/html");
@@ -123,18 +144,11 @@
         "[data-testid='product-promotions'], .product-promotions-wrapper, .promotion-box, [data-testid='product-promotions-wrapper']"
       );
       const scopes = roots.length ? Array.from(roots) : [doc];
-
       const selectors = [
-        "[data-testid='promotion-title']",
-        ".promotion-title",
-        ".promotion-box .title",
-        ".promotion-box-item .title",
-        ".promotion-box .text .title",
-        ".promotion-box-item .text .title",
-        ".promotion-box [data-testid='promotion-title']",
+        "[data-testid='promotion-title']", ".promotion-title", ".promotion-box .title", ".promotion-box-item .title",
+        ".promotion-box .text .title", ".promotion-box-item .text .title", ".promotion-box [data-testid='promotion-title']",
         ".promotion-box-item [data-testid='promotion-title']"
       ];
-
       for(const scope of scopes){
         for(const sel of selectors){
           scope.querySelectorAll(sel).forEach(n => add(n.textContent));
@@ -146,30 +160,16 @@
         const MAP = { "İ":"i","I":"i","ı":"i","Ş":"s","ş":"s","Ğ":"g","ğ":"g","Ü":"u","ü":"u","Ö":"o","ö":"o","Ç":"c","ç":"c" };
         const norm = (s)=> String(s||"").replace(/[İIıŞşĞğÜüÖöÇç]/g, ch=>MAP[ch]||ch).toLowerCase();
         const txt = norm(doc.body?.textContent || html).replace(/\s+/g," ");
-
-        // X Al Y Öde
-        for(const m of txt.matchAll(/\b(\d+)\s*al\s*(\d+)\s*ode\b/g)){
-          add(`${m[1]} Al ${m[2]} Öde`);
-        }
-        // Çok Al Az Öde
+        for(const m of txt.matchAll(/\b(\d+)\s*al\s*(\d+)\s*ode\b/g)){ add(`${m[1]} Al ${m[2]} Öde`); }
         if(/\bcok\s*al\s*az\s*ode\b/.test(txt)) add("Çok Al Az Öde");
-        // 2. Ürün TL
-        for(const m of txt.matchAll(/2\.\s*urun\s*(\d+)\s*tl/g)){
-          add(`2. Ürün ${m[1]} TL`);
-        }
-        // 2. Ürün %
+        for(const m of txt.matchAll(/2\.\s*urun\s*(\d+)\s*tl/g)){ add(`2. Ürün ${m[1]} TL`); }
         if(/2\.\s*urun\s*%/.test(txt)) add("2. Ürün %");
-        // TL Kupon
-        for(const m of txt.matchAll(/\b(\d+)\s*tl\s*kupon\b/g)){
-          add(`${m[1]} TL Kupon`);
-        }
+        for(const m of txt.matchAll(/\b(\d+)\s*tl\s*kupon\b/g)){ add(`${m[1]} TL Kupon`); }
         if(/\btl\s*kupon\b/.test(txt)) add("TL Kupon");
-        // Diğerleri
         if(/kupon\s*firsati/.test(txt)) add("Kupon Fırsatı");
         if(/birlikte\s*al\s*kazan/.test(txt)) add("Birlikte Al Kazan");
         if(/yetkili\s*satici/.test(txt)) add("Yetkili Satıcı");
       }
-
       return out;
     }catch(_){ return []; }
   }
@@ -229,7 +229,6 @@
     const ok = categoryHitFromBreadcrumbs(bc);
 
     if (ok){
-      // Kampanya son onayı: önce kartta varsa dene, yoksa sayfadan kontrol et
       let passByCampaign = false;
       if (ns.campaignsMatch){
         let accept = ns.campaignsMatch.accept(item.bundle||{});
@@ -263,7 +262,7 @@
     status,
     stop(){ stopped = true; Q.length = 0; metrics(); drained(); },
     resume(){ stopped = false; pump(); },
-    clear(){ Q.length = 0; stopped = false; metrics(); }
+    clear(){ Q.length = 0; stopped = false; active = 0; metrics(); }
   };
 
   // Tarayıcı olayları

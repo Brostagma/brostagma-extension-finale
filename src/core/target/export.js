@@ -38,43 +38,57 @@
     ensureXlsx();
     const XLSX = window.XLSX;
 
+    // --- YENİ: Markaya göre alfabetik sıralama ---
+    rows.sort((a, b) => (a.brand || "").localeCompare(b.brand || ""));
+
     // ---------- 1) EŞLEŞMELER ----------
-    const head = ["Marka", "Ürün", "Fiyat", "Birim Fiyat", "Kampanya", "Ürüne Git"];
+    // --- DEĞİŞTİ: Sütunlar güncellendi ---
+    const head = ["Ürüne Git", "Marka", "Ürün", "Fiyat"];
     const wsMain = XLSX.utils.aoa_to_sheet([head]);
 
     // veri satırları
     for (let i = 0; i < rows.length; i++) {
       const r = rows[i] || {};
       const R = i + 2; // header = 1
+      // --- DEĞİŞTİ: Sütunlar güncellendi ---
       const row = [
+        { t: "s", v: "Ürüne Git" },
         { t: "s", v: (r.brand || "") },
         { t: "s", v: (r.product || "") },
         numberCell(r.price),
-        numberCell(r.unitPrice),
-        { t: "s", v: (r.campaignsText || "") },
-        { t: "s", v: "Ürüne Git" },
       ];
       XLSX.utils.sheet_add_aoa(wsMain, [row], { origin: "A" + R });
 
-      // hyperlink
+      // --- DEĞİŞTİ: Linkler güncellendi (A, B ve C sütunları) ---
       if (r.url) {
-        const addr = "F" + R;
-        wsMain[addr] = wsMain[addr] || { t: "s", v: "Ürüne Git" };
-        wsMain[addr].l = { Target: r.url, Tooltip: r.product || r.url };
+        const tooltip = r.product || r.url;
+        // Sütun A: Ürüne Git
+        const addrA = "A" + R;
+        wsMain[addrA] = wsMain[addrA] || { t: "s", v: "Ürüne Git" };
+        wsMain[addrA].l = { Target: r.url, Tooltip: tooltip };
+
+        // Sütun B: Marka
+        const addrB = "B" + R;
+        wsMain[addrB] = wsMain[addrB] || { t: "s", v: (r.brand || "") };
+        wsMain[addrB].l = { Target: r.url, Tooltip: tooltip };
+
+        // Sütun C: Ürün
+        const addrC = "C" + R;
+        wsMain[addrC] = wsMain[addrC] || { t: "s", v: (r.product || "") };
+        wsMain[addrC].l = { Target: r.url, Tooltip: tooltip };
       }
     }
 
-    // genişlikler + filtre
+    // --- DEĞİŞTİ: Genişlikler yeni sıraya göre güncellendi ---
     wsMain["!cols"] = [
+      { wch: 16 }, // Link
       { wch: 24 }, // Marka
       { wch: 60 }, // Ürün
       { wch: 12 }, // Fiyat
-      { wch: 12 }, // Birim Fiyat
-      { wch: 28 }, // Kampanya
-      { wch: 16 }, // Link
     ];
     const lastRow = rows.length + 1;
-    wsMain["!autofilter"] = { ref: `A1:F${lastRow}` };
+    // --- DEĞİŞTİ: Filtre aralığı güncellendi ---
+    wsMain["!autofilter"] = { ref: `A1:D${lastRow}` };
 
     // ---------- 2) ÖZET ----------
     const tt = Number(meta.tt || 0);
@@ -98,33 +112,33 @@
     wsSummary["!cols"] = [{ wch: 28 }, { wch: 60 }];
 
     // ---------- 3) DETAYLAR ----------
-    const headD = ["#", "Marka", "Ürün", "Fiyat", "Birim Fiyat", "Kampanyalar", "URL", "Fiyat (Metin)"];
+    // --- DEĞİŞTİ: Sütunlar güncellendi ---
+    const headD = ["#", "Marka", "Ürün", "Fiyat", "URL", "Fiyat (Metin)"];
     const wsDetail = XLSX.utils.aoa_to_sheet([headD]);
     for (let i = 0; i < rows.length; i++) {
       const r = rows[i] || {};
       const R = i + 2;
+      // --- DEĞİŞTİ: Sütunlar güncellendi ---
       XLSX.utils.sheet_add_aoa(wsDetail, [[
         i + 1,
         r.brand || "",
         r.product || "",
         Number.isFinite(+r.price) ? +r.price : "",
-        Number.isFinite(+r.unitPrice) ? +r.unitPrice : "",
-        r.campaignsText || "",
         r.url || "",
         r.priceText || ""
       ]], { origin: "A" + R });
     }
+    // --- DEĞİŞTİ: Genişlikler güncellendi ---
     wsDetail["!cols"] = [
       { wch: 6 },  // #
       { wch: 24 }, // Marka
       { wch: 60 }, // Ürün
       { wch: 12 }, // Fiyat
-      { wch: 12 }, // Birim Fiyat
-      { wch: 28 }, // Kampanyalar
       { wch: 46 }, // URL
       { wch: 14 }, // Fiyat (Metin)
     ];
-    wsDetail["!autofilter"] = { ref: `A1:H${rows.length + 1}` };
+    // --- DEĞİŞTİ: Filtre aralığı güncellendi ---
+    wsDetail["!autofilter"] = { ref: `A1:F${rows.length + 1}` };
 
     // ---------- Kitap ----------
     const wb = XLSX.utils.book_new();
@@ -158,3 +172,4 @@
   window.BR_XLSX.exportMatches = exportMatches;
   window.BR_XLSX.exportLists   = exportLists;
 })();
+
