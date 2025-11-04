@@ -4,29 +4,79 @@
   100% { background-position: 220% 50%; }
 }
 
-.br-scan--active,
-.br-scan--match { position: relative; }
+/* 💥 GÜNCELLENMİŞ KEYFRAMES: Ajan Tarayıcı Işını Efekti (Daha Hızlı ve Eğimli) */
 
-/* Sadece SCANNING sırasında dış çerçeve akışı */
-.br-scan--active::before{
-  content:""; position:absolute; inset:-6px;
-  border-radius:14px;
-  background: linear-gradient(90deg, #7aa8ff, #4dffd6, #a07bff, #ff6eff, #7aa8ff);
-  background-size: 220% 100%;
-  animation: br-scan-border .9s linear infinite;
-
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-
-  padding:6px;
-  border-radius:14px;
-  box-shadow: 0 0 20px rgba(150,80,255,.8), 0 0 35px rgba(250,100,255,.6);
+/* Yatay Işın Animasyonu (Soldan Sağa Hızla Kayar ve Hafif Eğim Verir) */
+@keyframes br-scan-beam {
+    /* Başlangıç ve bitiş konumlarına hafif eğim (skewY) eklendi */
+    0% { transform: translate(-100%, 0) skewY(-3deg); } /* Sol dışarıdan başla */
+    100% { transform: translate(100%, 0) skewY(-3deg); } /* Sağ dışarıya git */
 }
 
+/* KART KONUMU: Efektlerin çalışması için z-index ve position ayarlanır */
+.br-scan--active,
+.br-scan--match, 
+.br-scan--pass { 
+  position: relative; 
+  /* Kartı diğer DOM elementlerinin üzerine çıkarır */
+  z-index: 2000; 
+  /* Efektlerin kart sınırları içinde kalması için overflow: hidden kullanılmalı */
+  overflow: hidden; 
+}
+
+/* Sadece SCANNING sırasında: ::before => TARAYICI IŞININI OLUŞTURUR */
+.br-scan--active::before{
+  content: ""; 
+  position: absolute; 
+  
+  /* Işının Konumlandırılması */
+  left: 0;
+  top: 0;
+  width: 100%; /* Kartın tam genişliği */
+  height: 100%; /* Kartın tam yüksekliği */
+  
+  /* Işının Görünümü (Daha Keskin ve Parlak Degrade Işın) */
+  background: linear-gradient(
+    90deg, 
+    rgba(255, 255, 255, 0) 0%, /* Saydam başlangıç */
+    rgba(77, 255, 214, 0.3) 45%, /* Daha az opak ışık gövdesi (Daha ince ışın) */
+    rgba(77, 255, 214, 0.95) 50%, /* Yüksek opaklık, parlak ışık merkezi */
+    rgba(77, 255, 214, 0.3) 55%, 
+    rgba(255, 255, 255, 0) 100% /* Saydam bitiş */
+  );
+  
+  /* Işını Başlangıç Konumuna Getirme (Kartın solunun 100% dışı) */
+  /* Elemana da eğim verilerek animasyonla senkronize çalışması sağlandı */
+  transform: translate(-100%, 0) skewY(-3deg); 
+  
+  /* Animasyon: Hızlandırıldı (0.6s'den 0.4s'ye düşürüldü) */
+  animation: br-scan-beam 0.4s linear infinite; 
+  
+  /* Işığın Kenar Parlaklığı */
+  filter: drop-shadow(0 0 4px #4dffd6) drop-shadow(0 0 1px #7aa8ff);
+  
+  /* Z-INDEX GÜNCELLEME: Kart içeriğindeki her şeyin üzerine çıkar */
+  z-index: 10001; 
+}
+
+/* Sadece SCANNING sırasında: ::after => KARTIN ÜZERİNDEKİ HAFİF OPALAKLIK (Opsiyonel: Taranıyor Hissi İçin) */
+.br-scan--active::after{
+  content: ""; 
+  position: absolute; 
+  inset: 0;
+  
+  /* Kartın üzerinde sabit duran hafif mavi opaklık */
+  background: rgba(122, 168, 255, 0.05);
+  border-radius: 8px; /* Kartın yuvarlaklığını takip eder */
+  pointer-events: none; /* Tıklamayı engellememek için */
+  
+  /* Işınından hemen sonraki katman */
+  z-index: 10000; 
+}
+
+
 /* =========================
-   ⭐ MATCH: 3D STAR + RING
+   ⭐ MATCH: 3D STAR + RING (Aşağısı Değiştirilmedi)
    ========================= */
 /* 3D yıldız */
 @keyframes br-match-3d {
@@ -101,12 +151,12 @@
 
   transform-origin:center;
   transform: translate(-50%,-50%) perspective(700px) rotateX(22deg) rotateZ(-10deg) scale(.7);
-  animation: br-match-3d 1.2s ease-out 1 forwards;
   z-index: 10002;
+  animation: br-match-3d 1.2s ease-out 1 forwards;
 }
 
 /* =========================
-   ⊘ PASS: 3D ICON + RING
+   ⊘ PASS: 3D ICON + RING (Aşağısı Değiştirilmedi)
    ========================= */
 @keyframes br-pass-3d {
   0% {
@@ -131,8 +181,6 @@
   30%  { opacity: .85; }
   100% { transform: translate(-50%,-50%) scale(2.6); opacity: 0; }
 }
-
-.br-scan--pass { position: relative; }
 
 /* 3D ring (PASS) */
 .br-scan--pass::before{
@@ -183,8 +231,8 @@
 
   transform-origin:center;
   transform: translate(-50%,-50%) perspective(700px) rotateX(14deg) rotateZ(0deg) scale(.78);
-  animation: br-pass-3d .95s ease-out 1 forwards;
   z-index: 10001;
+  animation: br-pass-3d .95s ease-out 1 forwards;
 }
 
 /* Hareket azaltma tercihi */

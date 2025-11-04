@@ -1,5 +1,7 @@
 // island.js
 // MAJOR GÜNCELLEME V2: Buton görünürlük mantığı ve durum renkleri iyileştirildi.
+// GÜNCELLEME V3: Tarama başlatma seçicisi ve export yardımcı fonksiyonları düzeltildi.
+// GÜNCELLEME V4 (Düzeltme): Fiyat çıkarma (extractPriceFromCard) mantığı, scan.js ile %100 senkronize hale getirildi.
 (function (ns) {
   let mounted = false;
   let root, btnScan, btnExport;
@@ -19,7 +21,6 @@
     exportReady = !!on;
     if (btnExport) {
       btnExport.setAttribute("aria-disabled", String(!exportReady));
-      // GÜNCELLEME: Buton aktif/pasif olduğunda görsel sınıfı değiştir.
       btnExport.classList.toggle("is-ready", exportReady);
     }
   }
@@ -64,17 +65,75 @@
     if (!watchTimer) watchTimer = setInterval(reposition, 400);
   }
 
-  // --- Yardımcı fonksiyonlar (extractRowFromCard vb.) değişmedi, daha kompakt yazıldı ---
+  // --- Yardımcı fonksiyonlar (Export için güncellendi) ---
   const cleanWS = (s)=> String(s||"").replace(/\s+/g," ").trim();
+  const pick = (el)=>{ if(!el)return"";const t=el.getAttribute&&el.getAttribute("title");return(t&&t.trim())||(el.textContent||"").trim();}; // scan.js'den pick fonksiyonu
   function parsePriceToNumber(text){ let s=String(text||"").replace(/[^\d.,]/g,"").trim(); if(!s)return null; const hC=s.includes(","),hD=s.includes("."); if(hC&&hD){s=s.replace(/\./g,"").replace(",",".");}else if(hC){s=s.replace(",",".");} const n=parseFloat(s); return isFinite(n)?n:null; }
-  function readCampaignsFromCard(card){ try{if(card.dataset.brCampaigns){const arr=JSON.parse(card.dataset.brCampaigns||"[]"); if(arr.length)return arr.map(cleanWS);}}catch{} const names=Array.from(card.querySelectorAll(".variant-options-wrapper .name, .badges-wrapper .name, [class*='badge'] .name, .badge .name")).map(n=>cleanWS(n.textContent)).filter(Boolean); const out=[],seen=new Set(); for(const n of names){const k=n.toLowerCase(); if(seen.has(k))continue; seen.add(k); out.push(n);} return out; }
+
+  // YENİ: readCampaignsFromCard güncellendi
+  function readCampaignsFromCard(card){
+    try{
+      // scan.js tarafından eklenen data attribute'unu öncelikli kullan
+      if(card.dataset.brCampaigns){
+        const arr=JSON.parse(card.dataset.brCampaigns||"[]");
+        if(Array.isArray(arr) && arr.length) return arr.map(cleanWS);
+      }
+    }catch{}
+    // Fallback (eğer data attribute yoksa veya boşsa, DOM'dan okumayı dene)
+    const names = Array.from(card.querySelectorAll(
+        ".simplified-badge-text" // Yeni kampanya metin class'ı
+      )).map(n=>cleanWS(n.textContent)).filter(Boolean);
+
+    const out=[],seen=new Set();
+    for(const n of names){const k=n.toLowerCase(); if(seen.has(k))continue; seen.add(k); out.push(n);}
+    return out;
+  }
   function computeUnitPrice(price,campaigns){ if(!price||!campaigns?.length)return null; let best=null; for(const raw of campaigns){ const t=raw.toLowerCase(); const mXY=t.match(/\b(\d+)\s*al\s*(\d+)\s*ode\b/); if(mXY){const[_,X,Y]=mXY.map(Number); if(X>0&&Y>0){const u=price*(Y/X); best=(best==null||u<best)?u:best;}} const mP=t.match(/2\.\s*urun\s*%(\d+)/); if(mP){const p=parseInt(mP[1],10); if(p>=0&&p<=100){const u=price*(1-(p/200)); best=(best==null||u<best)?u:best;}}} return best; }
-  function extractPriceFromCard(card){ const q=(sel)=>card.querySelector(sel); const el=q(".prc-box-dscntd")||q(".prc-box-sllng")||q("[data-testid='price-current']")||q(".price")||q(".prc-box")||q(".price-information-container .price-item.lowest-price-discounted")||q(".price-information-container .price-item.discounted")||q(".price-information-container .price-item")||q(".price-information .price-item.discounted"); const priceText=el?cleanWS(el.textContent||el.getAttribute("title")||""):""; const priceNum=parsePriceToNumber(priceText); return{priceText,priceNum}; }
-  function extractRowFromCard(card){ const q=(sel)=>card.querySelector(sel); const pickText=(el)=>el?(el.getAttribute("title")||"").trim()||(el.textContent||"").trim():""; const brand=cleanWS(pickText(q(".prdct-desc-cntnr-ttl, [data-testid='brand'], .brand"))); const product=cleanWS(pickText(q(".product-desc-sub-text, .product-desc-sub-container .product-desc-sub-text"))||pickText(q(".product-desc-cntnr-name, .prdct-desc-cntnr-name, [data-testid='product-name'], .name"))); const{priceText,priceNum}=extractPriceFromCard(card); let url=""; const a=Array.from(card.querySelectorAll("a[href]")).filter(a=>!a.href.includes("#")&&!/javascript:/i.test(a.href)).sort((a,b)=>(b.href.length||0)-(a.href.length||0))[0]; if(a){try{url=new URL(a.getAttribute("href"),location.href).href;}catch{url=a.getAttribute("href");}} const campaigns=readCampaignsFromCard(card); const unitPrice=computeUnitPrice(priceNum,campaigns); const campaignsText=campaigns.join(", "); return{brand,product,priceText,price:priceNum,unitPrice,campaignsText,url}; }
+
+
+  // ====================== DÜZELTME BAŞLANGIÇ ======================
+  // YENİ: extractPriceFromCard güncellendi (scan.js'deki mantıkla BİREBİR AYNI)
+  function extractPriceFromCard(card){
+    const q=(sel)=>card.querySelector(sel);
+    const priceText =
+      pick(q(".basket-promo-price-wrapper .price-value")) || // 1. Sepette İndirim
+      pick(q(".ty-plus-promotion-price .price-value")) ||     // 2. Plus'a Özel Fiyat
+      pick(q(".discounted-price > .sale-price")) ||          // 3. İndirimli Fiyat (sale-price)
+      pick(q(".discounted-price > .price-value")) ||         // 4. İndirimli Fiyat (price-value)
+      pick(q(".single-price > .price-section")) ||          // 5. Normal Fiyat (price-section)
+      pick(q(".promotion-price > span.prc-slg")) ||           // 6. (scan.js sırası)
+      pick(q(".discounted-price > div.prc-slg")) ||           // 7. (scan.js sırası)
+      pick(q(".single-price > div.prc-slg"));                 // 8. (scan.js sırası)
+
+    const priceNum = parsePriceToNumber(priceText);
+    return { priceText: priceText || "", priceNum }; // priceText boşsa boş string döndür
+   }
+  // ======================= DÜZELTME SONU =======================
+
+
+   // YENİ: extractRowFromCard güncellendi
+  function extractRowFromCard(card){
+    const q=(sel)=>card.querySelector(sel);
+    // Yeni seçiciler
+    const brand=cleanWS(pick(q("span.product-brand")));
+    const product=cleanWS(pick(q("span.product-name")));
+    const{priceText,priceNum}=extractPriceFromCard(card); // Güncellenmiş (düzeltilmiş) fonksiyonu kullan
+    let url="";
+    // Yeni link seçicisi
+    // product-card'ın kendisi <a> etiketi olduğu için card'ı direkt kullanabiliriz.
+    const a = card; // Kartın kendisi link
+    if(a){try{url=new URL(a.getAttribute("href"),location.href).href;}catch{url=a.getAttribute("href") || "";}} // URL yoksa boş string
+
+    const campaigns=readCampaignsFromCard(card); // Güncellenmiş fonksiyonu kullan
+    const unitPrice=computeUnitPrice(priceNum,campaigns);
+    const campaignsText=campaigns.join(", ");
+    return{brand,product,priceText,price:priceNum,unitPrice,campaignsText,url};
+  }
+  // --- Yardımcı fonksiyonlar sonu ---
 
   function pushMatchFromEl(el){
     if (!el) return;
-    const row = extractRowFromCard(el);
+    const row = extractRowFromCard(el); // Güncellenmiş fonksiyonu kullanacak
     const key = row.url || `${row.brand}|${row.product}`;
     if (!key.trim() || matchKeys.has(key)) return;
     matchKeys.add(key);
@@ -115,7 +174,10 @@
     btnScan.innerHTML = `<span class="br-island__icon">${ICONS.play}${ICONS.stop}</span><span class="br-island__label">Taramayı Başlat</span>`;
     btnScan.addEventListener("click", () => {
         const eventName = scanning ? "br:scan:stop" : "br:scan:start";
-        document.dispatchEvent(new CustomEvent(eventName, { detail: { selector: ".p-card-wrppr", minDwellMs: 40 } }));
+        // YENİ: Doğru seçiciyi kullan
+        document.dispatchEvent(new CustomEvent(eventName, { detail: { selector: "[data-testid='product-card']", minDwellMs: 40 } }));
+        // Alternatif (varsayılanı kullanmak için):
+        // document.dispatchEvent(new CustomEvent(eventName, { detail: { minDwellMs: 40 } }));
     });
 
     btnExport = document.createElement("button");
@@ -134,7 +196,7 @@
           const onDrained = () => {
             document.removeEventListener("br:ds:drained", onDrained);
             lockPanel(false);
-            btnExport.click();
+            btnExport.click(); // Tekrar tıkla
           };
           document.addEventListener("br:ds:drained", onDrained);
           return;
@@ -144,15 +206,25 @@
         if (!window.BR_XLSX?.exportMatches) throw new Error("Export modülü (BR_XLSX) bulunamadı.");
         const te = matches.length;
         const ttEl = document.querySelector('.br-counters__grid .br-counters__item .br-counters__value');
-        const tt = ttEl ? parseInt(ttEl.textContent, 10) || 0 : 0;
+        const tt = ttEl ? parseInt(ttEl.textContent.replace(/[^\d]/g, ''), 10) || 0 : 0; // Sayıyı temizle
         const d = new Date();
         const filename = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} - tt${tt} - te${te}`;
-        const { blobUrl, filename: outName } = await window.BR_XLSX.exportMatches({ rows: matches, filename, meta: { tt, te, createdAt: d.toISOString() } });
+
+        // Kampanya filtresi bilgisini meta'ya ekle
+        const selectedCampaigns = ns.campaigns?.getSelected ? ns.campaigns.getSelected() : [];
+
+        const { blobUrl, filename: outName } = await window.BR_XLSX.exportMatches({
+             rows: matches,
+             filename,
+             meta: { tt, te, createdAt: d.toISOString(), selectedCampaigns } // Kampanyaları ekle
+        });
         const a = document.createElement("a");
         a.href = blobUrl; a.download = outName;
         document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(blobUrl); // Blob URL'yi serbest bırak
         toast("success", "Eşleşenler indiriliyor…");
       } catch (err) {
+        console.error("Export error:", err); // Hata detayını konsola yazdır
         toast("error", `İndirilemedi: ${err.message || err}`);
       }
     });
@@ -169,7 +241,11 @@
     document.addEventListener('br:ds:overlay:close', () => setIslandLock(false));
   }
 
-  createIsland();
+  // Gecikmeli başlatma (sayfa tamamen yüklendikten sonra)
+  if (document.readyState === "complete") {
+      createIsland();
+  } else {
+      window.addEventListener("load", createIsland);
+  }
 
 })(window.BR = window.BR || {});
-

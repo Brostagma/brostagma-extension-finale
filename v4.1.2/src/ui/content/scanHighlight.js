@@ -2,16 +2,30 @@
 // Sınıf tabanlı animasyon tetikleyici: scanning, match, dt, pass
 // Görseller highlight.css'te tanımlıdır.
 (function(){
+  // NOT: __DEV_MODE__ bayrağı scan.js dosyasından gelmez, bu yüzden test etmek için true olarak bırakıyoruz.
+  const __DEV_MODE__ = true; 
+  
   const ACTIVE = "br-scan--active";
   const MATCH  = "br-scan--match";
   const DT     = "br-scan--dt";
   const PASS   = "br-scan--pass";
 
   function ensureAnchor(el){
+    // Yeni DOM yapısında position static'den farklı değilse, position'ı relative yapıyoruz.
+    // Bu, efektlerin (görsel çerçevelerin) doğru bir şekilde konumlandırılmasını sağlar.
     try {
       const cs = getComputedStyle(el);
-      if (cs.position === "static") el.style.position = "relative";
-    } catch {}
+      // 'static' dışında herhangi bir position değeri varsa (relative, absolute, fixed, sticky) dokunma.
+      // Eğer 'static' ise, 'relative' yaparak bir ankraj noktası oluştur.
+      if (cs.position === "static") {
+        el.style.position = "relative";
+        if (__DEV_MODE__) {
+           // Console log'u kaldırıldı
+        }
+      }
+    } catch (e) {
+      if (__DEV_MODE__) console.error("ensureAnchor failed", e); 
+    }
   }
 
   function addTemp(el, cls, ms){
